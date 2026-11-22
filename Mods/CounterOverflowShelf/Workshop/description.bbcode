@@ -1,0 +1,54 @@
+[h2]Counter Expansion Shelf (No Lost Goods)[/h2]
+When a customer or merchant brings more goods than fit on the bargain counter, or Dr. Jackson's shop stock overflows, vanilla silently destroys whatever does not fit. This mod places all those overflow goods onto a scrollable expansion shelf right next to the counter — no paging, no ticking through a text list, and no complex batch-refresh flow. Everything sits in one visual grid where you can inspect items at a glance and drag them straight onto the counter to trade, keeping behavior clean, stable, and far less prone to bugs.
+
+[list]
+[*][b]No more lost goods[/b]: rescues customer goods and Dr. Jackson's stock that vanilla would destroy when the bargain counter is full. As wide as the counter (18 columns), holds up to 200 rows, and supports both the mouse wheel and scrollbar.
+[*][b]Drag and bargain as usual[/b]: drag goods from the shelf onto the counter or bargain area to haggle or buy. Drag anything you cannot afford or decide against back onto the shelf to free up counter space.
+[*][b]Alt/Ctrl-click quick transfer[/b]: click unpurchased shelf goods with either shortcut to send them to the bargain area. Use either shortcut in the bargain area to return goods to the front counter first, with leftovers going to the expansion shelf automatically, even if no shelf has appeared yet. Works in your store and at Dr. Jackson's; anything that still does not fit stays where it is. Follows your in-game key bindings. Shift keeps its normal display-case behavior and cannot move unpurchased goods there.
+[*][b]Full wholesale support[/b]: the wholesale price in the bargain panel automatically includes the shelf, and clicking Wholesale buys the shelf together with the counter while respecting the game's option for moving purchased items to your inventory.
+[*][b]Auto show and no accidental close[/b]: appears beside the counter as soon as items overflow and stays open even when emptied so you can return items, then clears and hides with the counter when the customer leaves, the shutter closes, you leave Dr. Jackson, or the day ends. Has no close button and ignores Esc so goods are never hidden and wiped by mistake.
+[*][b]Vanilla storage style and layout memory[/b]: uses vanilla Machinery gray window framing, dark grid cells and a matching gray scrollbar. Drag the title bar to move and the bottom-right corner to resize row by row; layout is remembered separately for your store and Dr. Jackson's.
+[*][b]Sort and undo[/b]: right-click an empty shelf cell or press the vanilla sort-menu shortcut to arrange by size, from start or end, and undo while respecting pinned items and removal rules.
+[*][b]Simpler flow, fewer bugs[/b]: keeps the vanilla counter size intact and avoids goods-paging or batch-refill refresh loops that repeatedly clear, respawn, and resync items across virtual pages. Overflow items stay in a single real native inventory grid the whole time while the scrollbar only shifts the visible view, staying close to vanilla container behavior and avoiding state desyncs or edge-case glitches.
+[/list]
+
+[h3]Smart sorting compatibility[/h3]
+With [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3829206666]Smart Inventory Arrange[/url] installed and enabled, the shelf sort menu supports its Smart Arrange and Keep Containers & Machines modes, including button hover feedback. That mod provides the smart sorting algorithm; it is not built into this mod, and vanilla sorting and undo still work without it. Sorting does not mark unpurchased goods as owned or alter buying, wholesale or counter-clearing rules.
+
+[h3]Settings[/h3]
+[list]
+[*][b]Enable expansion shelf[/b] (default on): when off, new overflow is destroyed as in vanilla. Goods already on the shelf are unaffected.
+[*][b]Shelf rows in the store[/b] (default 4) and [b]Shelf rows at Dr. Jackson's[/b] (default 12): default visible rows from 2 to 30. Changing either resets the dragged height for that location.
+[*][b]Shelf position[/b] (default right): preferred side of the counter; switches to the opposite side automatically if it would go off screen. Changing it resets saved positions for both locations.
+[/list]
+
+[h3]Similar mods[/h3]
+These mods also handle goods that do not fit on the counter:
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834275644]Counter Expand[/url]: enlarges the in-store bargain counter and display area, or refills goods in batches.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3835147893]商人货物翻页 (Merchant Goods Paging)[/url]: adds pages to the trade panel for whitelisted merchants.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3831077199]杰克逊博士商店翻页 / Jackson's Shop Pages[/url]: splits Dr. Jackson's stock into pages on three shelves.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3835115070]供货清单 (Supply List)[/url]: lists all goods on a note next to the counter, where you tick the ones to put on the counter.
+[/list]
+This mod keeps the vanilla counter size intact and avoids complex goods-paging or batch-refresh flows that repeatedly clear, repopulate, and resync items. Instead, it puts overflow from both store customers and Dr. Jackson into one scrollable native grid beside the counter — items remain in real grid cells the whole time, visible at a glance and ready to drag, with no paging, list ticking, or external reflection permissions, keeping the flow clean with fewer bugs. Because these mods intercept the same goods, enable only one of them; a log warning is written if Supply List is also active.
+
+[h3]Notes & limitations[/h3]
+[list]
+[*][b]Save-safe[/b]: does not modify save files; window layout is stored separately in the mod data folder, so the mod can be added or removed at any time. Vanilla never saves mid-trade, and if a manual save mod saves during a trade, unpurchased shelf items are not saved (matching vanilla destroying them).
+[*][b]Customer & story reactions[/b]: events triggered when an item lands on the counter fire once you drag it from the shelf onto the counter, and repeat if moved back and forth just like moving items between the counter and bargain area.
+[*][b]Scope[/b]: catches goods that would be destroyed because the bargain counter is full, and unpurchased goods returned from the bargain area with Alt/Ctrl-click when the front counter cannot fit them. Items that fail to place in unrelated containers are unaffected.
+[*]When reporting an issue, please include the Player.log lines containing Counter Expansion Shelf or cirno9.counter_overflow_shelf.
+[/list]
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]Vending Machine Enhancement (Modules & Capacity)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]Tooltip Auto Scale[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]Projector Showcase (Display Case Expansion)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]Faster Exit[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]Mod Keybind Hub[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]Reputation Interface Remake[/url]
+[/list]

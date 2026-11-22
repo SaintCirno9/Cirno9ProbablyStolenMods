@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>CounterOverflowShelf</AssemblyName>
+    <RootNamespace>CounterOverflowShelf</RootNamespace>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\ScrollableGridInventory.cs" Link="Source\ScrollableGridInventory.cs" />
+    <Compile Include="..\Shared\ScrollableStoragePatches.cs" Link="Source\ScrollableStoragePatches.cs" />
+    <Compile Include="..\Shared\ScrollableStorageWindow.cs" Link="Source\ScrollableStorageWindow.cs" />
+    <Reference Include="UnityEngine.UI" HintPath="$(GameManagedDir)UnityEngine.UI.dll" Private="false" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(GameManagedDir)UnityEngine.UIModule.dll" Private="false" />
+    <Reference Include="Unity.TextMeshPro" HintPath="$(GameManagedDir)Unity.TextMeshPro.dll" Private="false" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(GameManagedDir)UnityEngine.InputLegacyModule.dll" Private="false" />
+  </ItemGroup>
+</Project>

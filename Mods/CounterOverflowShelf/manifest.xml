@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>cirno9.counter_overflow_shelf</ID>
+  <Name>柜台扩容货架 / Counter Expansion Shelf</Name>
+  <Author>SaintCirno9</Author>
+  <ModVersion>1.2.0</ModVersion>
+  <Description>顾客、商人带来的货物或杰克逊博士的库存在谈判柜台上摆不下时，本模组接管原版货物翻页与溢出销毁机制，把多出来的货物直接放进柜台旁的扩容货架：采用原版储藏区深色格子与灰色滚动条风格，支持滚轮与拖动，窗口可自由移动、按行调整高度，店内和杰克逊博士处分别记忆布局。把货物拖上柜台即可照常议价购买，不买的货可随时拖回货架，批发会连同货架一并计价买下，违禁品与赃物检查及举报奖金同步计入货架上的货物。支持原生 Alt/Ctrl 点击在货架与谈判区之间快速转移未购物品，退回时优先放前柜台，放不下的剩余数量自动进货架；快捷键跟随游戏改键，Shift 保留展示柜及所有权限制。支持原版整理与撤销；安装并启用 Smart Inventory Arrange 后还可使用其智能排列与保留容器和机器排列（排序算法由该模组提供）。清台时剩余货物按原版规则一并清除，顾客不会因柜台暂时拿空而提前离开；在设置里关闭总开关后，新的溢出货物恢复原版处理。
+
+When customer or merchant goods or Dr. Jackson's stock do not fit on the bargain counter, this mod replaces vanilla stock paging and overflow destruction, placing extra goods directly onto an expansion shelf next to the counter. Built with vanilla storage styling, native inventory grids and gray scrolling controls, the window can be moved and resized row by row, remembering layout separately for your store and Dr. Jackson's. Drag goods onto the counter to bargain or buy as usual, return unwanted items to the shelf, and buy both counter and shelf together in one wholesale deal. Contraband/stolen checks and report rewards also include unpurchased items on the shelf, and customers will not leave early while items remain on the shelf. Supports native Alt/Ctrl-click transfers of unpurchased goods between the shelf and bargain area; returning goods fills the front counter first and sends leftovers to the shelf. Follows your in-game key bindings, while Shift keeps its display-case and ownership restrictions. Supports vanilla sorting and undo, plus Smart Inventory Arrange modes when that mod is enabled. Remaining unpurchased goods are cleared with the counter as in vanilla, and disabling the mod toggle restores vanilla paging/overflow behavior.</Description>
+  <GameVersions>
+    <Version>1.0.0.*</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>CounterOverflowShelf.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

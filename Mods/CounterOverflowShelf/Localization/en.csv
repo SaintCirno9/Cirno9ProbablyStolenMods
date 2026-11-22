@@ -1,0 +1,10 @@
+# en.csv English
+shelf_title,Counter Expansion Shelf ({0})
+cfg_enabled,Enable expansion shelf
+cfg_enabled_tip,Customer goods and Dr. Jackson's stock that do not fit on the bargain counter go to an expansion shelf next to it instead of using vanilla stock paging or being destroyed. When off new overflow falls back to vanilla behavior.
+cfg_rows,Shelf rows in the store
+cfg_rows_tip,Number of grid rows the shelf window shows in your store; scroll with the mouse wheel or the scrollbar to see the rest. Rows set by dragging the bottom-right corner are remembered; changing this setting restores the value here.
+cfg_jackson_rows,Shelf rows at Dr. Jackson's
+cfg_jackson_rows_tip,Number of grid rows the shelf window shows at Dr. Jackson's. Rows set by dragging the bottom-right corner are remembered; changing this setting restores the value here.
+cfg_side,Shelf position
+cfg_side_tip,Which side of the bargain counter the shelf sits on by default. Switches to the other side automatically if it would go off screen. A position set by dragging the title bar is remembered; changing this setting restores the default position.

@@ -1,0 +1,8 @@
+key,value
+section.title,提示框自适应缩放
+opt.adaptive_widen.label,超长先适度加宽折行
+opt.adaptive_widen.tip,提示框超出最大占屏比例时，先在屏幕宽度允许范围内分步加宽折行，仍超出时再缩小
+opt.max_screen_percent.label,提示框最大占屏比例 (%)
+opt.max_screen_percent.tip,悬停提示框宽或高允许占用的最大屏幕比例；加宽折行与自动缩小均以此为上限
+opt.min_scale_percent.label,最小自动缩放比例 (%)
+opt.min_scale_percent.tip,自动缩小时允许的下限比例，避免极端超长文本缩到难以辨认

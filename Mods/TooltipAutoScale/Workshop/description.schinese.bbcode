@@ -1,0 +1,36 @@
+[h2]提示框自适应缩放（超长自动加宽折行 + 缩小贴屏）[/h2]
+在安装机器多级升级（如 More Device Upgrades）、多词条模组、基因种子或带有长说明的模组物品时，原版悬停提示框默认按较窄字数折行并容易直接冲出屏幕底部，导致下半段属性与操作提示被裁切看不到。本模组采用“先适度加宽折行、仍超出时再等比缩小”的两段式处理，在保持普通短提示框原版外观的前提下，让超长提示完整显示在屏幕内。
+
+[list]
+[*][b]第一阶段：超长先适度加宽折行[/b]：高度在屏幕安全占比内的普通提示框完全保持原版宽度与排版；仅当行数超出占屏上限时，才在屏幕宽度允许范围内分步加宽折行以减少垂直换行，刚好放得下即止。若内容为纯手动硬换行（加宽不减少行数），则不会增加无效水平留白。
+[*][b]第二阶段：仍超高或过宽时自动等比缩小[/b]：若加宽后仍然超出设定的屏幕占用比例上限，则对提示框整体等比缩小（保留可读最小缩放比例下限），并基于缩放后的实际尺寸重算光标左右/上下翻转与屏幕四边钳位，既不挡住指针下的物品或机器，也不会溢出屏幕边缘。
+[*][b]作用域隔离与无额外权限[/b]：加宽折行仅作用于物品与机器悬停提示，不影响对话、书籍或事件日志；仅影响悬停提示框本身，不干扰其他界面窗口，不需要 external reflection 等敏感权限。
+[/list]
+
+[h3]模组设置[/h3]
+可在游戏内 [b]设置 -> 提示框自适应缩放[/b] 中随时调整：
+[list]
+[*][b]超长先适度加宽折行[/b]（默认开启）：超出最大占屏比例时先分步加宽折行；关闭后将跳过加宽，直接按比例缩小。
+[*][b]提示框最大占屏比例 (%)[/b]（默认 85，范围 50~95）：提示框宽或高允许占用的最大屏幕比例，加宽折行与自动缩小均以此为上限。
+[*][b]最小自动缩放比例 (%)[/b]（默认 50，范围 35~100）：自动缩小时允许的下限比例，避免极端超长文本缩得过小难以辨认。
+[/list]
+
+[h3]兼容与说明[/h3]
+[list]
+[*][b]兼容[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834796164]浮窗位置优化[/url][/b]：遵循其左右/上下象限对齐规则并按缩放后实际宽高重算落点，缩小后依然紧贴悬停物品旁边，不会偏离或错被顶到屏幕上缘。
+[*][b]兼容 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3828868413]Item Details 物品详情[/url][/b]：开启物品类型标签时自动为提示框顶部外侧预留安全高度，避免超长提示框贴顶时把上方分类标签裁出屏幕。
+[*][b]存档安全与零敏感权限[/b]：纯界面排版与缩放增强，不修改存档文件，可随时启用或移除；不使用外部反射能力（Capabilities 为空）。
+[/list]
+
+[hr][/hr]
+[h3]我的其他模组[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]自动售货机增强（模组改装与扩容）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]更好用的滑条（支持直接输入数字）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]框选批量打开容器（酒瓶/机器等）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]投影仪展示区（展示柜扩容）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]柜台扩容货架（货物摆不下不消失）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]退出游戏加速[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]模组快捷键汇总[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]势力声望面板重制[/url]
+[/list]

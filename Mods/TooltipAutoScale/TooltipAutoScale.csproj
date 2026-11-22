@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>TooltipAutoScale</AssemblyName>
+    <RootNamespace>TooltipAutoScale</RootNamespace>
+    <Version>1.0.1</Version>
+    <Description>物品与机器悬停提示框超长时先适度加宽折行，仍超高或过宽时自动等比缩小并修正边界位置。</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine.UI" HintPath="$(GameManagedDir)UnityEngine.UI.dll" Private="false" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(GameManagedDir)UnityEngine.UIModule.dll" Private="false" />
+  </ItemGroup>
+</Project>

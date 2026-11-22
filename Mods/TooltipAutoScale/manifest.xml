@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>cirno9.tooltip_auto_scale</ID>
+  <Name>提示框自适应缩放 / Tooltip Auto Scale</Name>
+  <Author>SaintCirno9</Author>
+  <ModVersion>1.0.1</ModVersion>
+  <Description>针对物品、机器、改造模块与基因种子等超长悬停提示框：高度超出屏幕占用比例上限时，先在屏幕宽度允许范围内分步适度加宽折行以减少垂直换行；若加宽后仍然过高或过宽，再对提示框整体等比缩放（保留可读最小缩放下限）并基于缩放后实际尺寸重算贴边位置与屏幕钳位，兼容浮窗位置优化（3834796164）与 Item Details 顶部类型标签（3828868413）。可在游戏设置中开关先加宽行为并调整最大占屏比例与最小缩放比例。不依赖 reflection-external。
+
+Automatically fits oversized item, machine, module, and seed hover tooltips on screen: when a tooltip exceeds the configured screen ratio height, it first widens line wrapping in modest steps within screen width bounds to reduce vertical line count; if it still exceeds height or width limits, it proportionally scales the tooltip window (down to a configurable minimum readable scale) and recalculates scaled bounds cleanly alongside Stable Tooltip Side (3834796164) and Item Details top badges (3828868413). Configurable in the Options menu with zero reflection-external capability required.</Description>
+  <GameVersions>
+    <Version>0.46D</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>TooltipAutoScale.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

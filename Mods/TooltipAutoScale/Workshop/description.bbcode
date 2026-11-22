@@ -1,0 +1,36 @@
+[h2]Tooltip Auto Scale[/h2]
+When inspecting heavily upgraded machines (such as More Device Upgrades), multi-affix modules, genetics seeds, or items with long mod descriptions, vanilla hover tooltips wrap narrowly and overflow past the bottom edge of the screen, making the lower stats and hints unreadable. This mod automatically fits oversized tooltips back on screen in two stages while keeping normal short tooltips completely untouched.
+
+[list]
+[*][b]Stage 1 — Adaptive Widen Before Scaling[/b]: Normal tooltips within your configured screen height limit keep the exact vanilla width and look. Only when a tooltip exceeds the height threshold does the mod incrementally widen line wrapping within safe screen-width bounds, stopping as soon as height fits or no further line reduction is gained.
+[*][b]Stage 2 — Proportional Auto-Scaling & Smart Bounds[/b]: If a widened tooltip still exceeds the configured screen width or height budget, the tooltip window is proportionally scaled down (respecting a configurable minimum readable scale floor), and cursor-side flipping plus four-edge screen clamping are recalculated using the scaled bounds so the tooltip stays fully readable on screen without blocking the item under your cursor.
+[*][b]Scoped & Compatible[/b]: Line widening is scoped strictly to item and machine hover tooltip generation without altering dialogues, books, or event logs. Works cleanly alongside other UI mods without needing external reflection capabilities.
+[/list]
+
+[h3]Options[/h3]
+Adjustable anytime under [b]Options -> Tooltip Auto Scale[/b]:
+[list]
+[*][b]Adaptive Widen Before Scale[/b] (default: On): Widens line wrapping within screen bounds before scaling down tall hover tooltips. Turn off to scale directly without widening.
+[*][b]Max Tooltip Screen Ratio (%)[/b] (default: 85, range: 50-95): Maximum fraction of screen width or height a hover tooltip may occupy.
+[*][b]Min Tooltip Scale (%)[/b] (default: 50, range: 35-100): Minimum allowed downscale percentage to keep extreme long text legible.
+[/list]
+
+[h3]Compatibility & Notes[/h3]
+[list]
+[*][b]Compatible with [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834796164]Stable Tooltip Side[/url][/b]: Runs after quadrant-placement patches and recalculates anchor coordinates using the scaled tooltip dimensions, keeping scaled tooltips tightly aligned right beside hovered items instead of drifting apart or snapping to the top edge.
+[*][b]Compatible with [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3828868413]Item Details[/url][/b]: Detects enabled item category badges displayed above tooltips and automatically reserves top screen clearance so badges are never clipped off the top edge on tall tooltips.
+[*][b]Save-safe & Zero Sensitive Capabilities[/b]: Pure UI layout enhancement; does not alter save files and requires no external-reflection capability (Capabilities is empty).
+[/list]
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]Vending Machine Enhancement (Modules & Capacity)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]Projector Showcase (Display Case Expansion)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]Counter Expansion Shelf (No Lost Goods)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]Faster Exit[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]Mod Keybind Hub[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]Reputation Interface Remake[/url]
+[/list]

@@ -1,0 +1,31 @@
+[h2]Faster Exit[/h2]
+With a heavy mod list, clicking Exit can freeze the game window for tens of seconds before closing. On quit, the game removes every Harmony patch one by one and recompiles each patched method after every single removal — wasted work when the process is about to terminate anyway.
+
+This mod skips patch removal only while the game is quitting, leaving the rest of the shutdown intact. Tested with over 3,000 active patches: mod shutdown dropped from ~24 seconds to under 1 second.
+
+[list]
+[*][b]Normal cleanup preserved[/b]: every mod's OnDisable callback (saving mod settings, unsubscribing events, freeing objects) runs as usual; only patch removal by the loader and individual mods is skipped.
+[*][b]Quit only[/b]: toggling mods on or off from the in-game Mods screen still installs and removes patches normally.
+[*][b]Slow-shutdown log[/b]: any mod whose OnDisable itself takes over 100 ms on quit is logged with its elapsed time, making remaining bottlenecks easy to spot.
+[*][b]Plug and play[/b]: does not touch the mod loader, built-in game patches, or save files. No settings, no load-order requirements, safe to add or remove anytime.
+[/list]
+
+[h3]Notes[/h3]
+[list]
+[*][b]Remaining exit time[/b]: the vanilla 1-second analytics wait (when analytics consent is enabled), Unity's own ~1-second engine shutdown, and non-unpatch work inside mods' OnDisable callbacks (such as exit-save mods writing files) still run normally.
+[*][b]Compatibility[/b]: skipping unpatching keeps loaded patches in memory until the process exits. Vanilla does not save on quit and no issues occurred in testing, but if a mod logs shutdown errors or fails to save its own config, try disabling this mod to compare.
+[*]When reporting an issue, please include the Player.log lines containing Faster Exit or cirno9.fast_quit.
+[/list]
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]Vending Machine Enhancement (Modules & Capacity)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]Tooltip Auto Scale[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]Projector Showcase (Display Case Expansion)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]Counter Expansion Shelf (No Lost Goods)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]Mod Keybind Hub[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]Reputation Interface Remake[/url]
+[/list]

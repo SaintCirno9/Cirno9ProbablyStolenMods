@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>cirno9.fast_quit</ID>
+  <Name>退出游戏加速 / Faster Exit</Name>
+  <Author>SaintCirno9</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <Description>退出游戏时，原版加载器会逐个模组撤销 Harmony 补丁，每撤销一个补丁就重建一次被修改的方法；装了大量模组时退出要卡几十秒。不少模组还会在 OnDisable 里自行撤销补丁，同样很慢。进程马上就要结束，撤销补丁没有意义。本模组在退出时照常调用每个模组的 OnDisable，只跳过所有撤销补丁的操作。
+
+On quit the vanilla loader unpatches every mod one patch at a time, rebuilding the patched method after each removal; with many mods installed this stalls the exit for tens of seconds. Many mods also unpatch themselves in OnDisable, which is just as slow. The process is about to end, so unpatching is pointless. This mod still calls every mod's OnDisable on quit and only skips all unpatching.</Description>
+  <GameVersions>
+    <Version>0.46D</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>FastQuit.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

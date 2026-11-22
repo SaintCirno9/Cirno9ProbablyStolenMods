@@ -1,0 +1,31 @@
+[h2]退出游戏加速[/h2]
+模组越装越多之后，点“退出游戏”常常要卡上十几秒甚至几十秒才关掉窗口。这是因为退出时游戏会逐个撤销所有 Harmony 补丁，每拆掉一个补丁都要把对应方法重新编译一遍——而游戏进程马上就要结束了，拆补丁纯属白费功夫。
+
+本模组只在退出游戏的瞬间跳过拆补丁步骤，其余退出清理照常执行。实测 3000 多个补丁下，模组卸载耗时从约 24 秒缩短到 1 秒以内。
+
+[list]
+[*][b]保留正常退出清理[/b]：每个模组的 OnDisable 回调（保存模组设置、解绑事件、释放资源等）照常执行，仅跳过加载器与各模组自身的拆补丁调用。
+[*][b]不影响平时开关模组[/b]：仅在确认退出游戏时生效；平时在模组管理界面启用或停用模组，补丁依然正常安装与卸载。
+[*][b]慢速模组排查日志[/b]：若退出时仍有某个模组的 OnDisable 耗时超过 100 ms，会在日志中记录具体模组与耗时，方便定位真正拖慢退出的来源。
+[*][b]即插即用[/b]：不修改加载器与游戏自身的补丁，不读写存档，无设置项，无加载顺序要求，可随时启用或移除。
+[/list]
+
+[h3]补充说明[/h3]
+[list]
+[*][b]不会跳过的正常耗时[/b]：开启数据统计授权时原版退出前固定等待 1 秒、Unity 引擎自身关闭约 1 秒，以及各模组在 OnDisable 中执行的非拆补丁工作（例如退出存档类模组写盘），仍按正常流程完成。
+[*][b]兼容性说明[/b]：跳过拆补丁后，已加载的补丁会保留到进程结束。原版退出不涉及游戏存档，实测未见异常；若个别模组在退出末尾报错或自身配置文件保存异常，可先停用本模组对比排查。
+[*]反馈问题时，请附上 Player.log 中含有“退出游戏加速 / Faster Exit”或 cirno9.fast_quit 的日志行。
+[/list]
+
+[hr][/hr]
+[h3]我的其他模组[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]自动售货机增强（模组改装与扩容）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]更好用的滑条（支持直接输入数字）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]框选批量打开容器（酒瓶/机器等）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]提示框自适应缩放[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]投影仪展示区（展示柜扩容）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]柜台扩容货架（货物摆不下不消失）[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]模组快捷键汇总[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]势力声望面板重制[/url]
+[/list]

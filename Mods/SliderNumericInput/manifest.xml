@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>cirno9.slider_numeric_input</ID>
+  <Name>滑条数字输入 / Slider Numeric Input</Name>
+  <Author>SaintCirno9</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <Description>为游戏“选项”窗口与模组配置窗口的滑条增加点击数字直接输入功能。点击滑条旁显示的数值即可原地进入编辑模式，支持回车或失焦确认、Esc 取消编辑而不关闭设置窗口，并自动按滑条上下限与整数步进约束；对原本未显示数字的浮点滑条也会补全右对齐数值显示。
+
+Click the numeric readout next to any slider in the Options or Mod Config window to edit the value inline. Press Enter or click away to apply (clamped and rounded to slider rules), or press Esc to cancel editing without closing the window. Also adds click-to-edit numeric readouts to float sliders that previously lacked one.</Description>
+  <GameVersions>
+    <Version>0.46D</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>SliderNumericInput.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

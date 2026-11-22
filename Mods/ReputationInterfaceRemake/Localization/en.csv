@@ -1,0 +1,13 @@
+# en.csv English
+option_section,Reputation Interface Remake
+config_use_new_board,Use new reputation board
+config_use_new_board_tip,Turn off to restore the original vertical screen. Takes effect after clicking Apply.
+config_debug_show_all,Debug: Show all reputation bars (incl. locked)
+config_debug_show_all_tip,Preview locked or untriggered faction reputation bars (e.g. Cartel, Newborn Alliance, Disaster Day Lighthouse) in the normal new board. Visual test only; does not modify saves.
+detail_pin_hint,Click a perk to pin details
+detail_switch_hint,Click a badged perk to toggle
+detail_perk_off,Turned off
+group_expand_hint,Click numbered perks to expand
+group_carousel_hint,Auto-cycling · Click icon to expand
+group_reward,Reward
+group_state_gated,Gated

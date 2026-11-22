@@ -1,0 +1,41 @@
+[h2]Reputation Interface Remake[/h2]
+Replaces the faction reputation screen with a row layout, fixing the overlap, misplaced columns and broken paging caused by several mods editing the screen at once.
+
+[list]
+[*]One row per faction: name, standing, exact value and a -200 to 200 bar.
+[*]Every perk icon sits on the bar at its threshold; icons that share or crowd a threshold stack automatically.
+[*]Icons in their original colors are active, orange-tinted icons have reached the threshold but are not active, and faded icons are not reached yet.
+[*]Hover over a perk for its details in the bottom panel. Click a perk without a switch badge to pin its details.
+[*]Scrolls when there are many factions; settings are built directly into the game's Options menu so you can switch views anytime.
+[/list]
+
+[b]Options[/b]
+Available in Main Menu or Esc Pause Menu -> Options -> [i]Reputation Interface Remake[/i]:
+[list]
+[*][b]Use new reputation board[/b] (default: On): Turn off to restore the original vertical screen. Takes effect after clicking Apply.
+[*][b]Debug: Show all reputation bars (incl. locked)[/b] (default: Off): Preview locked or untriggered faction reputation bars (e.g. Cartel, Newborn Alliance, Disaster Day Lighthouse) in the normal new board. Visual test only; does not modify saves.
+[/list]
+
+[b]Mod compatibility[/b]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3828971731]Faction Reputation Expansion[/url]: Newborn Alliance, extended perk icons and names, and the Faction Journal shortcut on the right of the toolbar. The list scrolls instead of using page buttons.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837976033]Reputation Expansion: Gangs and Investments[/url]: Extra perk icons and the Factions and People tabs. Click a perk with a switch badge to toggle it without changing its unlock requirements.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3829730904]Brewing Expansion[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3832840208]Tobacco Expansion[/url]: Outer Ring (both share the same faction).
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3832819040]Deep Space Clinic 2077[/url]: medical reputation.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3829946713]Disaster Day[/url]: exclusive Lighthouse reputation panel (clears stale normal faction rows on the same frame) and Lighthouse perk active states.
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3838944803]Upper Levels[/url]: escapes its clipped horizontal scroll viewport so the full row board renders properly and hides the vanilla layer.
+[/list]
+Factions that other mods add the standard way show up automatically. Rows inserted directly into the original screen are shown too, with perk thresholds estimated from icon positions. Mods that draw their own separate panel are not supported. The original screen objects are kept so other mods keep writing to them; this mod only redraws them.
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]Vending Machine Enhancement (Modules & Capacity)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]Tooltip Auto Scale[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]Projector Showcase (Display Case Expansion)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]Counter Expansion Shelf (No Lost Goods)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]Faster Exit[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]Mod Keybind Hub[/url]
+[/list]

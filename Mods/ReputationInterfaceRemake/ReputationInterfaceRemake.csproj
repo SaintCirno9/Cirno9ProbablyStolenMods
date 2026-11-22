@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ReputationInterfaceRemake</AssemblyName>
+    <RootNamespace>ReputationInterfaceRemake</RootNamespace>
+    <Version>1.0.5</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine.UI" HintPath="$(GameManagedDir)UnityEngine.UI.dll" Private="false" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(GameManagedDir)UnityEngine.UIModule.dll" Private="false" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameManagedDir)UnityEngine.TextRenderingModule.dll" Private="false" />
+    <Reference Include="Unity.TextMeshPro" HintPath="$(GameManagedDir)Unity.TextMeshPro.dll" Private="false" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+# zh.csv 简体中文
+option_section,势力声望面板重制
+config_use_new_board,使用新版势力档案
+config_use_new_board_tip,关闭后恢复原版纵向界面，点击应用后生效。
+config_debug_show_all,调试：显示全部声望条（含未解锁）
+config_debug_show_all_tip,开启后在新版正常声望面板中一并预览未解锁或未触发的势力声望条（如卡特尔、新生同盟、灾变日灯塔）；仅用于界面预览与测试，不修改存档。
+detail_pin_hint,点击奖励固定详情
+detail_switch_hint,点击带角标的奖励切换
+detail_perk_off,已手动关闭
+group_expand_hint,点击带数字的奖励展开
+group_carousel_hint,自动轮播中 · 点击图标展开
+group_reward,奖励
+group_state_gated,前置未完成

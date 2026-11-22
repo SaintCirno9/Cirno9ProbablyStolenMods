@@ -1,0 +1,53 @@
+# 构建产物
+bin/
+obj/
+*.dll
+*.pdb
+
+# Visual Studio / Rider
+*.user
+*.suo
+*.cache
+.vs/
+.idea/
+*.sln.iml
+.vscode/
+
+# NuGet
+*.nupkg
+packages/
+
+# 代理工具本地目录
+.claude/
+.codex/
+.codegraph/
+
+# 临时文件
+*.log
+*.tmp
+*.temp
+*.zip
+
+# 本地导出与外部参考，不纳入仓库
+GameSource/
+External/
+
+# 独立开发工作区
+Artifacts/
+.cache/
+
+# 本地工具；SteamCMD 登录后会在其目录缓存凭据
+Tools/
+
+# 本机配置、私人资料与凭据
+Private/
+.env
+.env.*
+!.env.example
+*.local.props
+*.local.json
+*.pem
+*.key
+*.pfx
+*.p12
+.alma-snapshots

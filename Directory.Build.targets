@@ -1,0 +1,30 @@
+<Project>
+  <Target Name="CheckProbablyStolenGameReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(GameRootDir)' == ''" Text="未配置游戏路径。请将 .env.example 复制为 .env，填写 PROBABLY_STOLEN_GAME_ROOT；也可传入 -p:GameRootDir。" />
+    <Error Condition="!Exists('$(GameManagedDir)Assembly-CSharp.dll')" Text="找不到游戏程序集：$(GameManagedDir)Assembly-CSharp.dll。请检查 .env 中的 PROBABLY_STOLEN_GAME_ROOT 或 -p:GameRootDir。" />
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\manifest.xml')" Text="模组缺少 manifest.xml：$(MSBuildProjectDirectory)" />
+  </Target>
+
+  <!-- 按 manifest.xml 的 Assemblies 部署 DLL，并同步游戏 ModLoader 读取的根目录资源。 -->
+  <Target Name="DeployProbablyStolenMod" AfterTargets="Build" Condition="'$(DeployMods)' == 'true'">
+    <PropertyGroup>
+      <ModDeployDir>$(GameRootPath)Mods\$(MSBuildProjectName)\</ModDeployDir>
+    </PropertyGroup>
+    <XmlPeek XmlInputPath="$(MSBuildProjectDirectory)\manifest.xml" Query="/Manifest/Assemblies/Assembly/text()">
+      <Output TaskParameter="Result" ItemName="ModManifestAssembly" />
+    </XmlPeek>
+    <Error Condition="'@(ModManifestAssembly)' == ''" Text="manifest.xml 未声明 Assemblies：$(MSBuildProjectDirectory)\manifest.xml" />
+    <Error Condition="'%(ModManifestAssembly.Filename)%(ModManifestAssembly.Extension)' != '%(ModManifestAssembly.Identity)'" Text="manifest.xml 的 Assembly 只能填写文件名：%(ModManifestAssembly.Identity)" />
+    <ItemGroup>
+      <ModDeployAssembly Include="@(ModManifestAssembly->'$(OutDir)%(Identity)')" />
+      <ModDeployResource Include="manifest.xml" />
+      <ModDeployResource Include="preview.png" Condition="Exists('preview.png')" />
+      <ModDeployResource Include="Textures\**\*;Localization\**\*;Sounds\**\*;Books\**\*;LootTables\**\*" />
+    </ItemGroup>
+    <Error Condition="!Exists('%(ModDeployAssembly.FullPath)')" Text="找不到 manifest.xml 声明的程序集：%(ModDeployAssembly.FullPath)" />
+    <!-- 不重试以便在文件被占用时立即失败；先复制 DLL，失败时不再同步资源。 -->
+    <Copy SourceFiles="@(ModDeployAssembly)" DestinationFolder="$(ModDeployDir)" SkipUnchangedFiles="true" Retries="0" />
+    <Copy SourceFiles="@(ModDeployResource)" DestinationFiles="@(ModDeployResource->'$(ModDeployDir)%(Identity)')" SkipUnchangedFiles="true" Retries="0" />
+    <Message Importance="high" Text="$(MSBuildProjectName) 已部署：$(ModDeployDir)" />
+  </Target>
+</Project>

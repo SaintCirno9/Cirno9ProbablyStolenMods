@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- 仅读取游戏路径字段，不把整个 .env 内容暴露为构建属性。 -->
+    <ProbablyStolenEnvGameRoot Condition="'$(GameRootDir)' == '' and Exists('$(RepositoryRoot).env')">$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(RepositoryRoot).env')), '(?m)^[ \t]*PROBABLY_STOLEN_GAME_ROOT[ \t]*=[ \t]*([^\r\n]*)').Groups.get_Item(1).Value.Trim())</ProbablyStolenEnvGameRoot>
+    <GameRootDir Condition="'$(GameRootDir)' == ''">$([System.Text.RegularExpressions.Regex]::Replace('$(ProbablyStolenEnvGameRoot)', '^[\x22\x27]|[\x22\x27]$', ''))</GameRootDir>
+  </PropertyGroup>
+</Project>

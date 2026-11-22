@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <ArtifactsDir>$(RepositoryRoot)Artifacts\</ArtifactsDir>
+    <Authors>SaintCirno9</Authors>
+    <DeployMods Condition="'$(DeployMods)' == ''">true</DeployMods>
+  </PropertyGroup>
+  <Import Project="$(RepositoryRoot)GamePaths.props" />
+  <PropertyGroup>
+    <GameRootPath>$([MSBuild]::EnsureTrailingSlash('$(GameRootDir)'))</GameRootPath>
+    <GameManagedDir>$(GameRootPath)Probably Stolen_Data\Managed\</GameManagedDir>
+    <!-- 游戏为 Unity 2021.3 Mono，与现有工坊模组一致使用 netstandard2.1。 -->
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BaseOutputPath>$(ArtifactsDir)bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(ArtifactsDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <!-- 公共游戏引用；其他程序集按实际 API 用途在各工程内追加，均不复制到输出目录。 -->
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp" HintPath="$(GameManagedDir)Assembly-CSharp.dll" Private="false" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="$(GameManagedDir)Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="UnityEngine" HintPath="$(GameManagedDir)UnityEngine.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(GameManagedDir)UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(GameManagedDir)0Harmony.dll" Private="false" />
+  </ItemGroup>
+</Project>

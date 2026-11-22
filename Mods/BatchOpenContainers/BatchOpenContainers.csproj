@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>BatchOpenContainers</AssemblyName>
+    <RootNamespace>BatchOpenContainers</RootNamespace>
+    <Version>1.1.0</Version>
+    <Description>框选多个容器后，在右键菜单中点击“打开全部”一次性打开所有选中的可打开容器，默认保留已记忆的窗口位置并智能排列新窗口。</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(GameManagedDir)UnityEngine.InputLegacyModule.dll" Private="false" />
+    <Reference Include="UnityEngine.UI" HintPath="$(GameManagedDir)UnityEngine.UI.dll" Private="false" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(GameManagedDir)UnityEngine.UIModule.dll" Private="false" />
+  </ItemGroup>
+</Project>

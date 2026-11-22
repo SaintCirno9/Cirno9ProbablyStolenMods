@@ -1,0 +1,11 @@
+# en.csv English
+cfg_direct_right_click,Right-click directly opens all selected
+cfg_direct_right_click_tip,When enabled, right-clicking any container in a box selection with 2+ openable containers (at least 1 closed) opens them all immediately (hold Shift + right-click for the context menu). When disabled (default), always opens the context menu and turns "Open" into "Open All (N)".
+cfg_layout_mode,Batch open window layout
+cfg_layout_mode_tip,How newly batch-opened container windows without remembered positions are arranged: Tile lays them out in a non-overlapping grid; Cascade staggers them diagonally; Vanilla uses the default cursor or saved position.
+cfg_layout_tile,Tile (Grid)
+cfg_layout_cascade,Cascade (Staggered)
+cfg_layout_vanilla,Vanilla Position
+cfg_preserve_saved_positions,Keep remembered window positions
+cfg_preserve_saved_positions_tip,When enabled (default), containers that already have a saved position restore it and only new ones are arranged. When disabled, all newly opened windows in the batch are arranged together to avoid stacking.
+ctx_open_all,Open All ({0})

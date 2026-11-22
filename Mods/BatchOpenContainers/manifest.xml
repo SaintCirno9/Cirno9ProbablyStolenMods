@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>cirno9.batch_open_containers</ID>
+  <Name>框选批量打开容器 / Batch Open Containers</Name>
+  <Author>SaintCirno9</Author>
+  <ModVersion>1.1.0</ModVersion>
+  <Description>使用左键框选多个容器或机器（如酒瓶、背包、储物箱、可打开的机器设备等）后，右键任一选中项会正常弹出右键菜单，并将原版“打开”按钮显示为“打开全部 (N)”，点击即可一次性打开所有选中的可打开目标。默认保留已记忆的窗口位置，仅对首次打开或无记忆位置的窗口从屏幕上方自动平铺（或层叠）。按住 Shift 右键可保留单个目标的“打开”菜单，也可在游戏“选项”中开启右键直接打开。
+
+Box-select multiple containers or openable machines (wine bottles, backpacks, crates, devices, etc.) and right-click any selected item to open the standard context menu with "Open All (N)" in place of "Open". Click it to open all openable targets in the selection at once. Preserves remembered window positions by default and tiles or cascades newly opened windows from the upper screen. Hold Shift + right-click to keep the single-item Open menu, or enable direct right-click in Options.</Description>
+  <GameVersions>
+    <Version>0.46D</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>BatchOpenContainers.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

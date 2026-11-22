@@ -1,0 +1,11 @@
+# zh.csv 简体中文
+cfg_direct_right_click,框选后右键直接打开全部容器
+cfg_direct_right_click_tip,开启后，框选 2 个及以上可打开容器且至少 1 个未打开时，右键其中任一容器会直接全部打开（按住 Shift 右键仍可打开右键菜单）。关闭后（默认）始终弹出右键菜单，并将“打开”显示为“打开全部 (N)”。
+cfg_layout_mode,批量打开窗口排列方式
+cfg_layout_mode_tip,批量打开多个容器时，对未记忆位置的新窗口的摆放方式：平铺尽量不重叠排列；层叠按固定偏移错开；原版位置则按鼠标位置或原版逻辑打开。
+cfg_layout_tile,平铺（不重叠网格）
+cfg_layout_cascade,层叠（错开叠放）
+cfg_layout_vanilla,原版位置
+cfg_preserve_saved_positions,保留已记忆的窗口位置
+cfg_preserve_saved_positions_tip,开启后（默认），以前记录过窗口位置的容器仍会在原记忆位置打开，仅对没有记录的新窗口应用排列；关闭时会对本次批量新打开的窗口统一排列，避免旧位置重叠。
+ctx_open_all,打开全部 ({0})

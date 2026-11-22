@@ -1,0 +1,9 @@
+# en.csv English
+mirror_tooltip,(Mirrored from this mod's config window; changing either has the same effect.)
+conflict_marker,Conflict ×{0}
+conflict_tooltip_title,Also bound to [{0}]:
+conflict_tooltip_item,· {0} ({1})
+owner_vanilla,Vanilla
+owner_devtools,Developer tools
+devtools_debug_panel,Debug panel (Shift+F9: legacy panel)
+devtools_console,Console

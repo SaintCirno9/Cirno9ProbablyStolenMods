@@ -1,0 +1,48 @@
+[h2]Mod Keybind Hub[/h2]
+Many mods add their hotkeys to the vanilla Key Binds section, mixed in with the game's own keys, which makes it hard to see what overlaps. This mod groups those hotkeys by mod and marks conflicts.
+
+[hr][/hr]
+[h2]IMPORTANT: Hard-coded hotkeys cannot be shown or changed[/h2]
+[quote][b][u]Some mods hard-code their hotkeys instead of registering them as game options or mod config entries. This mod cannot detect those keys: they do not appear in the list, cannot be rebound here, and are not included in conflict checks.[/u][/b]
+Likewise, keys a mod saves through its own screen and files cannot be listed. For those, check the owning mod's description or settings.[/quote]
+[hr][/hr]
+
+[list]
+[*][b]One section per mod[/b]: hotkeys (and related toggles) that other mods add to the vanilla Key Binds section are moved into one section per mod, titled Key Binds · mod name, at the end of the Options window. Vanilla keys stay where they are.
+[*][b]Hotkeys from mod configs[/b]: hotkeys set in a mod's config window are mirrored into that mod's section and can be rebound there. Both places change the same setting.
+[*][b]Conflict markers[/b]: entries that share a key with the game or another mod show a red Conflict ×N after their name. Hover it to see the entries using that key and the mods they belong to. Markers update as you rebind.
+[*][b]Developer tools[/b]: when the game's developer tools are on (dev.txt in the game folder), F9 (debug panel) and F8 (console) count as conflicts too.
+[*][b]Right-click to clear[/b]: right-click any key button in the Options window to set it to None. Takes effect when you press Apply.
+[/list]
+
+[h3]Limitations[/h3]
+[list]
+[*][b]Only hotkeys registered the standard way are listed[/b]: those registered as game options or stored in a mod config. Keys hard-coded in a mod, or saved through a mod's own screen and files, cannot be listed or checked for conflicts.
+[*][b]Key names stored as text in mod configs are detected by a rule[/b]: the default value must be a single key name, and the setting name or category must contain words such as key, bind, shortcut or control. Rarely, a setting may be missed or picked up by mistake.
+[*][b]Only mod hotkeys in the vanilla Key Binds section are moved[/b]: hotkeys a mod keeps in its own options section stay there.
+[*][b]Only the layout changes[/b]: rebinding and saving are still handled by the owning mod. Mods that read their hotkey only at startup need a game restart after rebinding.
+[*][b]Single keys only[/b]: vanilla rebinding has no key combinations. For hotkeys used with Ctrl or Shift, only the main key is shown, and conflicts are checked on the main key only.
+[*][b]A conflict only means the same key is bound[/b]: for example, several mods using Shift as a modifier in different situations are flagged too. Whether they actually interfere is up to you.
+[*]Vanilla rebinding refuses a key that another entry already uses, and mirrored config hotkeys take part in that check.
+[*][b]Whether clearing works depends on each mod[/b]: mods that do not support turning a hotkey off ignore None or restore their default key.
+[*][b]Right-clicking while waiting for a key[/b]: does nothing on the stable branch; press Esc first, then right-click to clear. The beta branch supports mouse buttons, so right-click binds Right Click there.
+[/list]
+
+[h3]Other notes[/h3]
+[list]
+[*]Does not touch your saves and stores no data of its own, so it can be enabled or removed at any time. When disabled, all hotkeys return to the vanilla Key Binds section.
+[*]Checked on the stable branch (Rev6) and the beta branch.
+[/list]
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]Vending Machine Enhancement (Modules & Capacity)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]Tooltip Auto Scale[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]Projector Showcase (Display Case Expansion)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]Counter Expansion Shelf (No Lost Goods)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]Faster Exit[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]Reputation Interface Remake[/url]
+[/list]

@@ -1,0 +1,9 @@
+# zh.csv 简体中文
+mirror_tooltip,（同步自该模组的配置窗口，两处修改效果相同）
+conflict_marker,冲突 ×{0}
+conflict_tooltip_title,以下条目也绑定了 [{0}]：
+conflict_tooltip_item,· {0}（{1}）
+owner_vanilla,原版
+owner_devtools,开发者工具
+devtools_debug_panel,调试面板（Shift+F9 旧版面板）
+devtools_console,控制台

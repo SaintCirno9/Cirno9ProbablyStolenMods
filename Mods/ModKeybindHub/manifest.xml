@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>cirno9.keybind_hub</ID>
+  <Name>模组快捷键汇总 / Mod Keybind Hub</Name>
+  <Author>SaintCirno9</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <Description>把其他模组塞进原版“按键设置”分区的快捷键按模组拆分成独立分区，统一放在选项窗口末尾；模组配置里的按键项（按键类型或以文本保存的键名）也会同步一份到这里，可直接改键。与原版或其他模组重复的按键会在条目名称后标出“冲突”，悬停可查看同键条目。按键按钮支持右键清空为“无”。只调整显示位置，改键与保存仍由原模组处理。代码中写死、未注册到选项窗口或模组配置的按键无法汇总。
+
+Moves the hotkeys other mods add to the vanilla Keybinds section into one section per mod at the end of the Options window. Key settings from mod configs (key-typed or key names stored as text) are mirrored here as well and can be rebound directly. Keys also bound by the game or another mod are marked "Conflict" next to the entry name; hover it to see which entries share the key. Right-click a key button to clear it to None. Only the layout changes; rebinding and saving are still handled by the owning mod. Hotkeys hard-coded in a mod and not registered as an option or config entry cannot be listed.</Description>
+  <GameVersions>
+    <Version>0.46D</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>ModKeybindHub.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

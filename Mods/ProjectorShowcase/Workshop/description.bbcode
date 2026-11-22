@@ -1,0 +1,40 @@
+[h2]Projector Showcase - Display Case Expansion[/h2]
+Adds a [b]Showcase[/b] area to the Mirage Projector: extra display case storage that counts as part of your display case. Put merchandise, signs, permits, black lamps and appraisal certificates in it to get more display space without taking up more shop floor. Items there keep attracting customers, feed the customer forecast and pass display case checks.
+
+[list]
+[*]A new Showcase panel on the Mirage Projector, 7×5 cells by default (the same size as the starter display case).
+[*]Width (3-16) and height (3-12) can be changed in the game's Options menu, under the Projector Showcase section.
+[*]When you shrink the size, items that now sit outside it are never destroyed or squeezed: the panel keeps the occupied area and shrinks back once those items are moved out.
+[*]The panel layout is Battery | Module | Showcase | Note. The vanilla battery, module and note slots keep their order, so existing saves, manuals that auto-load, and machine upgrade modules keep working.
+[/list]
+
+[b]When does it count as part of the display case[/b]
+Same as the vanilla projector, whenever it is active (its battery has charge, shown as active in the item tooltip), everything in the showcase panel is treated as displayed, wherever in your store you keep it (warehouse, counters, display case, trash can, hidden compartment...). The vanilla active state is updated at the nightly settlement when the battery is drawn, so a newly placed projector or a fresh battery takes effect after the next night:
+[list]
+[*]Merchandise, signs, firearm permits, black lamps and appraisal certificates take part in customer-type attraction, total-value tier checks, picky buyers and disguised customers.
+[*]The customer forecast panel, black lamp activation texture and hover odds, and certificate attraction and promotion replacement all include the showcase.
+[*]Contraband and stolen-goods attraction, the display case security check and the shop inspection treat it as part of the display case, and it is never counted twice in a full-store search or asset estimate.
+[*]A projector that has no power or is broken does not count: its contents are not treated as in the display case.
+[/list]
+
+[b]Notes[/b]
+[list]
+[*]Compatible with existing saves: vanilla slots keep their indexes and the showcase is added after them.
+[*][b]Compatibility with other mods[/b]: All vanilla display case effects work normally, as do mods that query the display case through vanilla helper methods. However, some mods use their own custom code to inspect the physical display case container directly instead of vanilla queries; items placed in the projector showcase may not trigger those custom effects (for example, the physician license from [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3832819040]Deep Space Clinic 2077[/url]). Place such mod-specific items directly in the physical display case instead.
+[*]No special permissions are needed.
+[/list]
+
+[b]Keywords[/b]: display case expansion, extra display case space, display case storage, showcase, Mirage Projector, customer attraction, black lamp, appraisal certificate.
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107]Vending Machine Enhancement (Modules & Capacity)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]Tooltip Auto Scale[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]Counter Expansion Shelf (No Lost Goods)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]Faster Exit[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]Mod Keybind Hub[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]Reputation Interface Remake[/url]
+[/list]

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ProjectorShowcase</AssemblyName>
+    <RootNamespace>ProjectorShowcase</RootNamespace>
+    <Version>1.0.3</Version>
+  </PropertyGroup>
+</Project>

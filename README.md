@@ -21,17 +21,12 @@ SaintCirno9 维护的《Probably Stolen》（深空当铺）原生模组开发�
 | 目录 / 文件 | 用途 |
 | --- | --- |
 | `Mods/<模组名>/` | 独立工程、源码、`manifest.xml` 与运行资源 |
+| `Mods/Shared/` | 供多个模组复用的共享组件源码 |
 | `Scripts/` | 游戏源码反编译、SteamCMD 安装与创意工坊发布脚本 |
-| `Tools/SteamCMD/` | 仓库内的 Valve 官方 SteamCMD，不提交 |
-| `Docs/` | 游戏 ModLoader 说明与长期开发规范 |
-| `GameSource/` | 游戏程序集反编译结果，本地保留，不提交 |
-| `External/` | 第三方模组参考源码，本地保留，不提交 |
-| `Artifacts/bin/<模组名>/<配置>/` | 构建产物，不提交 |
-| `Artifacts/Workshop/<模组名>/` | 创意工坊上传目录与 `item.vdf`，不提交 |
-| `.cache/` | 临时记录、备份与缓存，不提交 |
+| `Docs/` | 游戏 ModLoader 说明 |
 | `Directory.Build.props/targets` | 公共目标框架、游戏引用、依赖校验与构建后部署 |
 | `GamePaths.props` | 构建时读取 `.env` 的游戏路径 |
-| `.env.example` | 本机配置模板；实际 `.env` 不提交 |
+| `.env.example` | 本机配置模板 |
 
 ## 首次配置
 
@@ -67,7 +62,7 @@ dotnet build "Mods/<模组名>/<模组名>.csproj" -c Release -p:DeployMods=fals
 
 流程依据官方模组指南 `ModdingGuide.md` 的 “Publishing with steamcmd” 章节，使用拥有游戏的 Steam 账号。
 
-首次安装 Valve 官方 SteamCMD 到 `Tools/SteamCMD/`（校验 Valve 签名，不提交；登录后该目录会缓存 Steam 凭据）：
+首次安装 Valve 官方 SteamCMD（校验 Valve 签名；登录后会本地缓存 Steam 凭据）：
 
 ```powershell
 pwsh -NoProfile -File "Scripts/Install-SteamCmd.ps1"
@@ -95,7 +90,7 @@ pwsh -NoProfile -File "Scripts/Publish-WorkshopMod.ps1" -ModName <模组名> -Ch
 
 脚本会：
 
-- 以 `-p:DeployMods=false` 构建 Release，把声明的 DLL、`manifest.xml`、`preview.png` 和资源目录整理到 `Artifacts/Workshop/<模组名>/content/`，生成 `item.vdf`；
+- 以 `-p:DeployMods=false` 构建 Release，把声明的 DLL、`manifest.xml`、`preview.png` 和资源目录整理到临时上传目录并生成 `item.vdf`；
 - 按游戏扫描规则拦下未声明的 DLL、脚本、可执行文件、压缩包、源美术文件和点开头的条目，并检查 `preview.png` 小于 1 MB、`GameVersions` 与 `Player.log` 中的游戏版本匹配；若存在小于 1 MB 的 `Workshop/preview.gif`，优先用作工坊主封面图；
 - 提示完成游戏内 F8 控制台 `mod-scan <模组ID>` 等发布前检查并确认（`-Yes` 跳过）；
 - 调用 SteamCMD 前经 `Scripts/SteamCmdRegion.ps1` 自动核对当前网络出口与 SteamCMD 区域配置，避免跨区连接超时；
@@ -134,7 +129,7 @@ pwsh -NoProfile -File "Scripts/Test-WorkshopItem.ps1" -ModName <模组名>
 pwsh -NoProfile -File "Scripts/Update-GameSource.ps1"
 ```
 
-使用 `ilspycmd` 将 `Assembly-CSharp`、`Assembly-CSharp-firstpass` 反编译到 `GameSource/`，旧结果先移入 `.cache/GameSource-backups/`。可用 `-Assembly` 指定其他程序集。
+使用 `ilspycmd` 在本地反编译 `Assembly-CSharp` 与 `Assembly-CSharp-firstpass`（可用 `-Assembly` 指定其他程序集）。
 
 ## 许可证
 

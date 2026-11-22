@@ -1,0 +1,40 @@
+[h2]Vending Machine Enhancement (Modules & Capacity)[/h2]
+In the base game, neither the Vending Machine nor the Vending Fountain has a module bay, Vending Machine capacity tops out at 10 narrow upgrades (8×12), and reopening either machine always snaps its window back to the center of the screen. This mod gives both machines full module support, doubles Vending Machine capacity with wider shelves, and fixes window position memory.
+
+[list]
+[*][b]Full Module Bays for Both Machines[/b]: Adds a dedicated module bay to both the Vending Machine and the Vending Fountain. Drag a [b]Module Bay Expansion Kit[/b] directly onto either machine's core to expand its bay up to 2 times.
+[*][b]Meaningful Efficiency, Performance & Quality Effects[/b]:
+  - [b]Efficiency[/b]: Reduces nightly power draw on both machines (including extra power from capacity and attractiveness upgrades).
+  - [b]Performance[/b]: Boosts effective attractiveness on the Vending Machine and continues scaling guaranteed nightly sales past 100 attractiveness (+1 guaranteed sale per extra 50 by default, configurable in Mod Config). On the Vending Fountain, adds extra nightly water sale rounds (+1 guaranteed round per +100%, with partial percentages rolling for an extra round).
+  - [b]Quality[/b]: Stacks additional sale price markup on top of the base +10% bonus for both machines.
+[*][b]Doubled Vending Capacity (Up to 14×16)[/b]: Raises Vending Machine capacity upgrades from 10 to [b]20[/b]. Upgrades 1-10 follow vanilla (8×2 to 8×12), while upgrades 11-20 widen and heighten the grid up to [b]14×16 (224 cells)[/b]—more than double vanilla's 96-cell limit. (Vending Fountain water storage is unchanged.)
+[*][b]Actionable Tooltips & Window Position Memory[/b]: Hover items inside the Vending Machine to see exact projected sale payouts (or whether an item is ineligible). Hover either machine core to inspect effective attractiveness and guaranteed sales, nightly water sale rounds, total price bonus, current grid size, and module bay upgrade progress. Both machines now remember where you moved their windows instead of snapping back to center every time.
+[/list]
+
+[h3]Options[/h3]
+Fine-tune balance anytime under [b]Options -> Mod Config -> Module Effects[/b]:
+[list]
+[*][b]Quality Effect (%)[/b] (default: 10%, range: 0-100%): Scales how much Quality converts into extra sale price markup for both machines. Set to 0 to keep only the base +10% bonus.
+[*][b]Performance Effect (%)[/b] (default: 100%, range: 0-300%): Scales Performance's effect on vending attractiveness and nightly water sale rounds. Set to 0 to disable it.
+[*][b]Guaranteed Sale Step (Over 100)[/b] (default: 50, range: 0-500): Extra attractiveness needed per +1 guaranteed sale above 100 effective attractiveness. Set to 0 to keep the vanilla cap of 3.
+[/list]
+
+[h3]Compatibility & Notes[/h3]
+[list]
+[*][b]Existing-Save Friendly[/b]: Appends the module bay at the end of the panel list so existing slot indices stay intact; machines in existing saves migrate and recalculate automatically on load.
+[*][b]Before Disabling[/b]: Remove any modules from the added module bays—and move Vending Machine stock placed outside the vanilla 8×12 grid—before disabling or uninstalling this mod so nothing is lost.
+[*][b]Zero Sensitive Capabilities[/b]: Declares empty Capabilities (no external reflection).
+[/list]
+
+[hr][/hr]
+[h3]My other mods[/h3]
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3841350358]Better Sliders (Direct Numeric Input)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839958730]Batch Open Containers (Multi-Select)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3839077271]Tooltip Auto Scale[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3837855513]Projector Showcase (Display Case Expansion)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836730459]Counter Expansion Shelf (No Lost Goods)[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834715728]Faster Exit[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834652943]Mod Keybind Hub[/url]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3834158985]Reputation Interface Remake[/url]
+[/list]

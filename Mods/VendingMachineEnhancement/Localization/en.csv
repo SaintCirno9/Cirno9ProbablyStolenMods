@@ -1,0 +1,18 @@
+# en.csv English
+config_quality_coefficient,Quality Effect (%)
+config_quality_coefficient_help,"Scales the Quality module contribution to sale prices for both machines. Default: {0}%. Set to 0 to keep only the base +10% price bonus."
+config_performance_coefficient,Performance Effect (%)
+config_performance_coefficient_help,"Scales the Performance module effect on vending attractiveness and nightly water sale rounds. Default: {0}%. Set to 0 to disable this effect."
+config_guaranteed_step,Guaranteed Sale Step (Over 100)
+config_guaranteed_step_help,"Extra attractiveness needed per +1 guaranteed sale above 100 effective attractiveness. Default: {0}. Set to 0 to keep the vanilla cap of 3."
+tooltip_price_bonus,Vending Price Bonus: +{0}%
+tooltip_vending_item_payout,Vending Sale Price: {0}
+tooltip_vending_item_not_for_sale,Vending Sale Price: Not eligible
+tooltip_effective_attractiveness,Effective Attractiveness: {0} (Guaranteed: {1})
+tooltip_fountain_rounds_fixed,Nightly Sale Rounds: {0}x
+tooltip_fountain_rounds_chance,Nightly Sale Rounds: {0}x (+{1}% chance for +1)
+tooltip_fountain_rounds_reduced,Nightly Sale Rounds: {0}% chance for 1x
+tooltip_storage_with_size,{0} ({1}x{2})
+tooltip_module_bay_upgrade,Module Bay ({0}): {1}/{2}
+tooltip_module_guide_vending,"Modules: Efficiency lowers energy, Performance affects attractiveness, and Quality affects sale price."
+tooltip_module_guide_fountain,"Modules: Efficiency lowers energy, Performance affects nightly sale rounds, and Quality affects sale price."

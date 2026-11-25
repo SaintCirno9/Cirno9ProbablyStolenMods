@@ -197,21 +197,146 @@ function Get-SteamDirectoryPrimaryDc
     {
         $url = "https://api.steampowered.com/ISteamDirectory/GetCMListForConnect/v1/?cellid=$CellId&qoslevel=3"
         $resp = Invoke-RegionProbeRequest -Uri $url -ProxyEndpoint $ProxyEndpoint
-        $topList = @($resp.response.serverlist | Select-Object -First 6 | Where-Object { $_.dc })
+        $topList = @($resp.response.serverlist | Select-Object -First 8 | Where-Object { $_.dc })
         if ($topList.Count -eq 0) { return $null }
 
         $dominant = $topList | Group-Object -Property dc | Sort-Object Count -Descending | Select-Object -First 1
         $dc = "$($dominant.Name)".Trim().ToLowerInvariant()
+        $wsEndpoints = @(
+            $topList |
+                Where-Object { $_.type -eq 'websockets' -and $_.endpoint -match '\.steamserver\.net(?::\d+)?$' } |
+                ForEach-Object { "$($_.endpoint)".Trim() } |
+                Select-Object -Unique -First 2
+        )
         return [pscustomobject]@{
+            CellId      = $CellId
             Dc          = $dc
             MacroRegion = (Get-MacroRegionFromDc $dc)
             TopDcs      = (@($topList | ForEach-Object { $_.dc } | Select-Object -Unique) -join ', ')
+            WsEndpoints = $wsEndpoints
         }
     }
     catch
     {
         Write-Warning "查询 Steam CM 节点列表（cellid=$CellId）失败：$($_.Exception.Message)"
         return $null
+    }
+}
+
+function Measure-SteamCmCandidates
+{
+    <#
+    .SYNOPSIS
+        通过与 SteamCMD 相同的代理入口并发探测各候选大区的 *.steamserver.net CM 节点，识别分流后的真实最快大区。
+    #>
+    param(
+        [Parameter(Mandatory)][object[]]$Candidates,
+        [pscustomobject]$ProxyEndpoint,
+        [int]$TimeoutMs = 2500
+    )
+
+    if (-not $Candidates -or $Candidates.Count -eq 0) { return @() }
+
+    $handler = [System.Net.Http.HttpClientHandler]::new()
+    try
+    {
+        if ($ProxyEndpoint -and $ProxyEndpoint.Uri)
+        {
+            $handler.UseProxy = $true
+            $handler.Proxy = [System.Net.WebProxy]::new($ProxyEndpoint.Uri)
+        }
+        elseif ($ProxyEndpoint -and $ProxyEndpoint.Mode -eq 'Direct')
+        {
+            $handler.UseProxy = $false
+        }
+
+        $client = [System.Net.Http.HttpClient]::new($handler)
+        $client.Timeout = [TimeSpan]::FromMilliseconds($TimeoutMs)
+        try
+        {
+            $probes = @()
+            foreach ($cand in $Candidates)
+            {
+                $ep = if ($cand.WsEndpoints -and $cand.WsEndpoints.Count -gt 0) { $cand.WsEndpoints[0] } else { $null }
+                if (-not $ep) { continue }
+                $req = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Head, "https://$ep/")
+                $sw = [System.Diagnostics.Stopwatch]::StartNew()
+                $task = $client.SendAsync($req, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead)
+                $probes += [pscustomobject]@{
+                    Candidate = $cand
+                    Endpoint  = $ep
+                    Request   = $req
+                    Stopwatch = $sw
+                    Task      = $task
+                }
+            }
+
+            if ($probes.Count -eq 0) { return @() }
+
+            $pending = [System.Collections.Generic.List[object]]::new()
+            foreach ($p in $probes) { $pending.Add($p) }
+
+            $results = @()
+            while ($pending.Count -gt 0)
+            {
+                $tasks = [System.Threading.Tasks.Task[]]@($pending | ForEach-Object { $_.Task })
+                $doneIndex = [System.Threading.Tasks.Task]::WaitAny($tasks, $TimeoutMs + 500)
+                if ($doneIndex -lt 0)
+                {
+                    foreach ($left in $pending)
+                    {
+                        $left.Stopwatch.Stop()
+                        $left.Request.Dispose()
+                        $results += [pscustomobject]@{
+                            Candidate = $left.Candidate
+                            Endpoint  = $left.Endpoint
+                            Reachable = $false
+                            LatencyMs = [int]::MaxValue
+                        }
+                    }
+                    break
+                }
+
+                $done = $pending[$doneIndex]
+                $pending.RemoveAt($doneIndex)
+                $done.Stopwatch.Stop()
+                $reachable = $false
+                try
+                {
+                    if ($done.Task.Status -eq [System.Threading.Tasks.TaskStatus]::RanToCompletion)
+                    {
+                        $resp = $done.Task.Result
+                        if ($resp) { $resp.Dispose() }
+                        $reachable = $true
+                    }
+                }
+                catch
+                {
+                    $reachable = $false
+                }
+                finally
+                {
+                    $done.Request.Dispose()
+                }
+
+                $results += [pscustomobject]@{
+                    Candidate = $done.Candidate
+                    Endpoint  = $done.Endpoint
+                    Reachable = $reachable
+                    LatencyMs = if ($reachable) { [int]$done.Stopwatch.ElapsedMilliseconds } else { [int]::MaxValue }
+                }
+            }
+
+            return @($results | Sort-Object -Property @{ Expression = { -not $_.Reachable } }, LatencyMs)
+        }
+        finally
+        {
+            $client.Dispose()
+        }
+    }
+    finally
+    {
+        $handler.Dispose()
     }
 }
 
@@ -377,13 +502,21 @@ function Sync-SteamCmdRegion
 {
     <#
     .SYNOPSIS
-        核对代理出口区域与 SteamCMD 的有效 CellID / CMWebSocket 出口；不一致或未固定时更新 config.vdf。
+        通过实测 *.steamserver.net 候选 CM 节点连通性与延迟，核对并自动校准 SteamCMD 出口 CellID（兼容代理分流规则）。
     #>
     param(
         [Parameter(Mandatory)][string]$ConfigVdfPath,
         [string]$BackupDir,
+        [string]$OverrideCellId,
+        [switch]$SkipRegionSync,
         [switch]$Apply
     )
+
+    if ($SkipRegionSync)
+    {
+        Write-Host '已按参数跳过 SteamCMD 出口区域核对与校准。'
+        return
+    }
 
     $proxy = Get-EffectiveProxyEndpoint
     if ($proxy.Mode -eq 'SocksProxy')
@@ -391,16 +524,6 @@ function Sync-SteamCmdRegion
         Write-Warning "检测到 $($proxy.Label)（无 HTTP/HTTPS 代理端口），跳过 SteamCMD 出口区域自动探测。"
         return
     }
-
-    $egress = Get-EgressRegionInfo -ProxyEndpoint $proxy
-    if (-not $egress)
-    {
-        Write-Warning '未能识别当前网络出口区域，跳过 SteamCMD 出口核对。'
-        return
-    }
-
-    $proxyRegionLabel = if ($egress.MacroRegion) { "$($egress.Display) [$($egress.MacroRegion)]" } else { $egress.Display }
-    Write-Host "网络出口（$($proxy.Label)）：$proxyRegionLabel"
 
     if (-not (Test-Path -LiteralPath $ConfigVdfPath -PathType Leaf))
     {
@@ -435,58 +558,117 @@ function Sync-SteamCmdRegion
         Write-Host "SteamCMD CMWebSocket 缓存首部节点：$($vdfState.CachedTopDcs)"
     }
 
-    if (-not $egress.MacroRegion)
+    # 手动覆盖 CellID 优先。
+    if (-not [string]::IsNullOrWhiteSpace($OverrideCellId))
     {
-        Write-Warning "代理国家代码 $($egress.Country) 暂未映射大区，保留 SteamCMD 当前配置。"
+        $forcedId = $OverrideCellId.Trim()
+        $forcedInfo = Get-SteamDirectoryPrimaryDc -CellId $forcedId -ProxyEndpoint $proxy
+        $forcedDesc = if ($forcedInfo) { "$($forcedInfo.Dc) [$($forcedInfo.MacroRegion)]" } else { "CellID=$forcedId" }
+        $alreadyPinned = ($vdfState.ValidCurrentCellId -eq $forcedId) -and (-not $forcedInfo -or -not $vdfState.CachedPrimaryMacro -or $vdfState.CachedPrimaryMacro -eq $forcedInfo.MacroRegion)
+        if ($alreadyPinned)
+        {
+            Write-Host "SteamCMD 出口已固定为指定 CellID=`"$forcedId`"（$forcedDesc）。"
+            return
+        }
+        if (-not $Apply)
+        {
+            Write-Warning "将按手动指定调整 SteamCMD 出口为 CurrentCellID/CellIDServerOverride=`"$forcedId`"（$forcedDesc）并清理 CMWebSocket 缓存。"
+            return
+        }
+        $backupPath = if ($BackupDir) { Join-Path $BackupDir 'steamcmd_config.vdf.last.bak' } else { $null }
+        Update-SteamCmdVdfRegion -ConfigVdfPath $ConfigVdfPath -TargetCellId $forcedId -BackupPath $backupPath
+        Write-Host "已按手动指定调整 SteamCMD 出口：CurrentCellID / CellIDServerOverride -> `"$forcedId`"（$forcedDesc），并清理 CMWebSocket 缓存。"
         return
     }
 
-    $preferredRegionalId = if ($script:MacroRegionalCellIdMap.ContainsKey($egress.MacroRegion)) { $script:MacroRegionalCellIdMap[$egress.MacroRegion] } else { $null }
-    $cellMismatch = ($null -ne $cmdMacro) -and ($cmdMacro -ne $egress.MacroRegion)
-    $cacheMismatch = ($null -ne $vdfState.CachedPrimaryMacro) -and ($vdfState.CachedPrimaryMacro -ne $egress.MacroRegion)
-    $unpinned = $preferredRegionalId -and ((-not $vdfState.ValidCurrentCellId) -or ($vdfState.ValidCurrentCellId -eq '0'))
-    if (-not $cellMismatch -and -not $cacheMismatch -and -not $unpinned)
-    {
-        Write-Host 'SteamCMD 出口与当前代理节点区域一致。'
-        return
+    # 收集候选大区（覆盖 Steam 视角 cellid=0、当前配置大区、以及常见的国内直连/北美分流大区）。
+    $candidateMap = [ordered]@{}
+    $addCandidate = {
+        param([string]$Macro, [string]$CellId, [pscustomobject]$DirInfo)
+        if (-not $Macro -or $candidateMap.Contains($Macro)) { return }
+        $info = if ($DirInfo) { $DirInfo } else { Get-SteamDirectoryPrimaryDc -CellId $CellId -ProxyEndpoint $proxy }
+        if ($info -and $info.WsEndpoints -and $info.WsEndpoints.Count -gt 0)
+        {
+            $candidateMap[$Macro] = [pscustomobject]@{
+                MacroRegion = $Macro
+                CellId      = $CellId
+                Dc          = $info.Dc
+                WsEndpoints = $info.WsEndpoints
+            }
+        }
     }
 
-    # 优先使用已验证的大区 CellID 并通过 CurrentCellID + TimeCellIDSet 固定，未覆盖大区再回退 "0"。
+    $zeroInfo = Get-SteamDirectoryPrimaryDc -CellId '0' -ProxyEndpoint $proxy
+    if ($zeroInfo -and $zeroInfo.MacroRegion)
+    {
+        $zeroPreferred = if ($script:MacroRegionalCellIdMap.ContainsKey($zeroInfo.MacroRegion)) { $script:MacroRegionalCellIdMap[$zeroInfo.MacroRegion] } else { '0' }
+        & $addCandidate $zeroInfo.MacroRegion $zeroPreferred $zeroInfo
+    }
+    if ($currentDirInfo -and $currentDirInfo.MacroRegion)
+    {
+        $curPreferred = if ($script:MacroRegionalCellIdMap.ContainsKey($currentDirInfo.MacroRegion)) { $script:MacroRegionalCellIdMap[$currentDirInfo.MacroRegion] } else { $probeCellId }
+        & $addCandidate $currentDirInfo.MacroRegion $curPreferred $currentDirInfo
+    }
+    foreach ($defaultMacro in 'EastAsia-CNHK', 'NorthAmerica')
+    {
+        if (-not $candidateMap.Contains($defaultMacro) -and $script:MacroRegionalCellIdMap.ContainsKey($defaultMacro))
+        {
+            & $addCandidate $defaultMacro $script:MacroRegionalCellIdMap[$defaultMacro] $null
+        }
+    }
+
+    $targetMacro = $null
     $targetCellId = $null
     $targetDcDesc = $null
-    if ($preferredRegionalId)
+
+    # 实测各候选大区 *.steamserver.net 的真实连通性与延迟（直接反映分流规则，而非 ipinfo.io）。
+    $probeResults = Measure-SteamCmCandidates -Candidates @($candidateMap.Values) -ProxyEndpoint $proxy
+    if ($probeResults.Count -gt 0)
     {
-        $regInfo = Get-SteamDirectoryPrimaryDc -CellId $preferredRegionalId -ProxyEndpoint $proxy
-        if ($regInfo -and $regInfo.MacroRegion -eq $egress.MacroRegion)
+        Write-Host "SteamCMD 候选出口实测（$($proxy.Label)）："
+        $best = $probeResults | Where-Object { $_.Reachable } | Select-Object -First 1
+        foreach ($r in $probeResults)
         {
-            $targetCellId = $preferredRegionalId
-            $targetDcDesc = "$($regInfo.Dc) [$($regInfo.MacroRegion)]"
+            $c = $r.Candidate
+            $mark = if ($best -and $r -eq $best) { '  <-- 最快' } else { '' }
+            $latencyText = if ($r.Reachable) { "$($r.LatencyMs) ms" } else { '超时/不可达' }
+            Write-Host "  $($c.MacroRegion) (CellID=$($c.CellId), $($c.Dc), $($r.Endpoint)): $latencyText$mark"
         }
-    }
-    if (-not $targetCellId)
-    {
-        $zeroInfo = Get-SteamDirectoryPrimaryDc -CellId '0' -ProxyEndpoint $proxy
-        if ($zeroInfo -and $zeroInfo.MacroRegion -eq $egress.MacroRegion)
+        if ($best)
         {
-            $targetCellId = '0'
-            $targetDcDesc = "$($zeroInfo.Dc) [$($zeroInfo.MacroRegion)]"
-        }
-        elseif ($preferredRegionalId)
-        {
-            $targetCellId = $preferredRegionalId
-            $targetDcDesc = $egress.MacroRegion
+            $targetMacro = $best.Candidate.MacroRegion
+            $targetCellId = $best.Candidate.CellId
+            $targetDcDesc = "$($best.Candidate.Dc) [$targetMacro]"
         }
     }
 
-    if (-not $targetCellId)
+    # 若全部 CM 测速均不可达，回退到传统出口 IP 探测。
+    if (-not $targetMacro)
     {
-        Write-Warning "检测到 SteamCMD 出口 [$cmdMacro] 与代理区域 [$($egress.MacroRegion)] 不一致，但未能验证目标 CellID，保留原配置。"
+        $egress = Get-EgressRegionInfo -ProxyEndpoint $proxy
+        if (-not $egress -or -not $egress.MacroRegion)
+        {
+            Write-Warning '未能识别 SteamCMD 有效出口区域，保留当前 config.vdf 配置。'
+            return
+        }
+        Write-Host "回退公网出口探测（$($proxy.Label)）：$($egress.Display) [$($egress.MacroRegion)]"
+        $targetMacro = $egress.MacroRegion
+        $targetCellId = if ($script:MacroRegionalCellIdMap.ContainsKey($targetMacro)) { $script:MacroRegionalCellIdMap[$targetMacro] } else { '0' }
+        $targetDcDesc = $targetMacro
+    }
+
+    $cellMismatch = ($null -ne $cmdMacro) -and ($cmdMacro -ne $targetMacro)
+    $cacheMismatch = ($null -ne $vdfState.CachedPrimaryMacro) -and ($vdfState.CachedPrimaryMacro -ne $targetMacro)
+    $unpinned = ($targetCellId -ne '0') -and ((-not $vdfState.ValidCurrentCellId) -or ($vdfState.ValidCurrentCellId -eq '0'))
+    if (-not $cellMismatch -and -not $cacheMismatch -and -not $unpinned)
+    {
+        Write-Host "SteamCMD 出口与实测最快区域 [$targetMacro] 一致。"
         return
     }
 
     if (-not $Apply)
     {
-        Write-Warning "SteamCMD 出口需要更新（当前 $dcDesc，代理 [$($egress.MacroRegion)]）；实际发布前会自动设为 CurrentCellID/CellIDServerOverride=`"$targetCellId`"（$targetDcDesc）并清理 CMWebSocket 缓存。"
+        Write-Warning "SteamCMD 出口需要更新（当前 $dcDesc，实测最快 $targetDcDesc）；实际发布前会自动设为 CurrentCellID/CellIDServerOverride=`"$targetCellId`"（$targetDcDesc）并清理 CMWebSocket 缓存。"
         return
     }
 

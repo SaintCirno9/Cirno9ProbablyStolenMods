@@ -2,7 +2,7 @@
 
 - ID：`cirno9.vending_machine_enhancement`
 - 作者：SaintCirno9
-- 版本：1.0.0
+- 版本：1.0.1
 - Steam 创意工坊：[3843312107](https://steamcommunity.com/sharedfiles/filedetails/?id=3843312107)
 
 ## 功能
@@ -19,17 +19,19 @@
 
 ## 模组设置
 
-在模组管理界面选中本模组打开设置（分区 **模组效果 / Module Effects**）：
+在模组管理界面选中本模组打开设置：
 
-| 键 | 默认 | 范围 | 说明 |
-| --- | --- | --- | --- |
-| `quality_coefficient` | `10` | `0`–`100` | 质量效果系数（%）：折算到售价加成的比例，设为 `0` 时仅保留基础 `+10%` 售价加成 |
-| `performance_coefficient` | `100` | `0`–`300` | 性能效果系数（%）：影响售货机有效吸引力与售水机每晚售水轮次，设为 `0` 时关闭性能加成 |
-| `guaranteed_attractiveness_step` | `50` | `0`–`500` | 吸引力保底步长：有效吸引力超过 100 后每多该数值 `+1` 件保底售出，设为 `0` 时保持原版最多 3 件保底 |
+| 键 | 分区 | 默认 | 范围 | 说明 |
+| --- | --- | --- | --- | --- |
+| `quality_coefficient` | 模组效果 / Module Effects | `10` | `0`–`100` | 质量效果系数（%）：折算到售价加成的比例，设为 `0` 时仅保留基础 `+10%` 售价加成 |
+| `performance_coefficient` | 模组效果 / Module Effects | `100` | `0`–`300` | 性能效果系数（%）：影响售货机有效吸引力与售水机每晚售水轮次，设为 `0` 时关闭性能加成 |
+| `guaranteed_attractiveness_step` | 模组效果 / Module Effects | `50` | `0`–`500` | 吸引力保底步长：有效吸引力超过 100 后每多该数值 `+1` 件保底售出，设为 `0` 时保持原版最多 3 件保底 |
+| `enable_capacity_expansion` | 容量扩建 / Capacity Expansion | `true` | `true` / `false` | 启用 20 级容量扩建（最大 `14×16`）；关闭后交由原版或其他扩建模组接管容量 |
 
 ## 兼容与说明
 
 - 新增模组仓追加在设备面板结构末尾，不改变原版槽位编号；已有存档读档后自动适配现有设备并重算耗电与加成。
+- 与其他自动售货机模组（如 [More Vending Machines](https://steamcommunity.com/sharedfiles/filedetails/?id=3836658488)）良好兼容：窗口位置记忆不拦截点击入口、夜间售卖判定不短路第三方 `Prefix`/`Postfix`、核心提示采用追加方式，且 20 级容量扩建可在设置中随时关闭让位。
 - 停用或卸载本模组前，建议先取出新增模组仓内的改装模组，并移走售货机超出原版 `8×12` 范围摆放的商品，以免丢失。
 - 不声明敏感能力（`<Capabilities />`）。
 

@@ -127,7 +127,8 @@ internal static class VendingEnhancementCore
             int percent = SpriteHelper.GetInventoryCapacity(inventory);
             VendingMachineHelper.SetSpriteFromCapacity(machine, "vending", percent);
         }
-        if (StoreVendingMachine.Instance != null)
+        if (StoreVendingMachine.Instance != null
+            && EmporiumEntry.Instance?.vendingMachineElement?.childItem == machine)
         {
             StoreVendingMachine.Instance.UpdateSprite();
         }
@@ -225,7 +226,7 @@ internal static class VendingEnhancementCore
     {
         if (IsVendingMachine(machine))
         {
-            return VendingMachineHelper.POWER_USE + GetCapacityUpgradeCount(machine);
+            return VendingMachineHelper.POWER_USE + VendingMachineHelper.GetCapacityUpgradeCount(machine);
         }
         if (IsVendingFountain(machine))
         {
@@ -286,6 +287,19 @@ internal static class VendingEnhancementCore
 
         MachineHelper.OnMachineActioned(machine, moduleGrid);
         RecomputeModulesAndPower(machine, recomputeTempStats: false);
+    }
+
+    internal static int GetAttractivenessForSale(GameItem machine)
+    {
+        if (machine == null)
+        {
+            return 0;
+        }
+        if (!VendingEnhancementMod.Active)
+        {
+            return machine.GetTagReadonly(VendingMachineHelper.VENDING_ATTRACTIVENESS).GetInt();
+        }
+        return GetEffectiveVendingAttractiveness(machine);
     }
 
     internal static int GetEffectiveVendingAttractiveness(GameItem machine)
@@ -442,34 +456,35 @@ internal static class VendingEnhancementCore
         return true;
     }
 
-    internal static void ToggleOrOpenVendingWindow(GameItem machine)
+    /// <summary>
+    /// 在 PixelWindow.Center() 之后恢复售货机/售水机已记忆的窗口位置，避免拦截 StoreVendingMachine.OnClick 与其他模组冲突。
+    /// </summary>
+    internal static void RestoreVendingWindowPositionIfSaved(PixelWindow window)
     {
-        if (machine?.contentWindow == null)
+        if (window == null || window.parentItems == null)
         {
             return;
         }
-        PixelWindow window = machine.contentWindow;
-        if (window.IsVisible())
+
+        for (int i = 0; i < window.parentItems.Count; i++)
         {
-            window.Hide();
+            GameItem parent = window.parentItems[i];
+            if (!IsTargetVending(parent) || parent.contentWindow != window)
+            {
+                continue;
+            }
+
+            Dictionary<int, Vector2> savedPositions = PlayerStore.Instance?.contentWindowPositions;
+            if (savedPositions != null && savedPositions.ContainsKey(parent.GetUniqueID()))
+            {
+                parent.RestoreContentWindowPosition();
+            }
+            else
+            {
+                window.FixBounds();
+            }
             return;
         }
-
-        window.SetTitle(machine.GetDisplayName(preferCustomName: true));
-        window.Show();
-
-        int uniqueId = machine.GetUniqueID();
-        Dictionary<int, Vector2> savedPositions = PlayerStore.Instance?.contentWindowPositions;
-        if (savedPositions != null && savedPositions.ContainsKey(uniqueId))
-        {
-            machine.RestoreContentWindowPosition();
-        }
-        else
-        {
-            window.Center();
-            window.FixBounds();
-        }
-        window.ToFront();
     }
 
     internal static string GetFountainRoundsTooltipText(int perfBonus)

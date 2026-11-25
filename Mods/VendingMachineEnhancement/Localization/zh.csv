@@ -5,6 +5,8 @@ config_performance_coefficient,性能效果系数（%）
 config_performance_coefficient_help,调整性能模组对售货吸引力和每晚售水轮次的效果。默认 {0}%。设为 0 时关闭该效果。
 config_guaranteed_step,吸引力保底步长
 config_guaranteed_step_help,有效吸引力超过 100 后，每额外增加该数值即 +1 件保底售出。默认 {0}。设为 0 时保持原版最多 3 件保底。
+config_enable_capacity_expansion,启用 20 级容量扩建（最大 14×16）
+config_enable_capacity_expansion_help,关闭后将容量升级交还给原版或其他售货机扩建模组（如 More Vending Machines），仅保留改装模组仓与窗口位置记忆。
 tooltip_price_bonus,售货售价加成：+{0}%
 tooltip_vending_item_payout,售货机成交价：{0}
 tooltip_vending_item_not_for_sale,售货机成交价：不可售卖
@@ -12,7 +14,7 @@ tooltip_effective_attractiveness,有效吸引力：{0}（保底售出：{1} 件�
 tooltip_fountain_rounds_fixed,每晚售水轮次：{0} 轮
 tooltip_fountain_rounds_chance,每晚售水轮次：{0} 轮（+{1}% 概率额外 +1 轮）
 tooltip_fountain_rounds_reduced,每晚售水轮次：{0}% 概率售出 1 轮
-tooltip_storage_with_size,{0}（{1}×{2}）
+tooltip_expanded_capacity,扩展容量上限：{0}/{1}（当前 {2}×{3}）
 tooltip_module_bay_upgrade,模组仓扩展（{0}）：{1}/{2}
 tooltip_module_guide_vending,模组效果：效率降低耗电，性能影响有效吸引力，质量影响售价加成。
 tooltip_module_guide_fountain,模组效果：效率降低耗电，性能影响每晚售水轮次，质量影响售价加成。

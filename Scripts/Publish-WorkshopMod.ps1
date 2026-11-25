@@ -52,6 +52,8 @@ param(
     [string]$SteamUser,
     [string]$SteamCmdPath,
     [switch]$AllowSameVersion,
+    [string]$SteamCellId,
+    [switch]$SkipRegionSync,
     [switch]$MetadataOnly,
     [switch]$PreviewOnly,
     [switch]$Yes,
@@ -405,6 +407,8 @@ else
 $steamCmd = if (-not $MetadataOnly) { Resolve-SteamCmdExecutable -Root $repositoryRoot -OverridePath $SteamCmdPath } else { $null }
 $steamCmdConfigPath = if (-not $MetadataOnly) { Get-SteamCmdConfigVdfPath -Root $repositoryRoot -SteamCmdExePath $steamCmd } else { $null }
 
+$resolvedSteamCellId = Get-ProbablyStolenSetting -Name 'STEAMCMD_CELL_ID' -Value $SteamCellId -Optional
+
 if ($DryRun)
 {
     Write-Host ''
@@ -414,7 +418,7 @@ if ($DryRun)
     }
     else
     {
-        Sync-SteamCmdRegion -ConfigVdfPath $steamCmdConfigPath
+        Sync-SteamCmdRegion -ConfigVdfPath $steamCmdConfigPath -OverrideCellId $resolvedSteamCellId -SkipRegionSync:$SkipRegionSync
         Write-Host ''
         Write-Host "DryRun：未上传。实际发布时执行：steamcmd -nobootstrapupdate -skipinitialbootstrap +login <账号> +workshop_build_item `"$vdfPath`" +quit"
         if (-not $PreviewOnly -and $extraTexts.Count -gt 0)
@@ -508,7 +512,7 @@ if (-not $isNew -and -not $PreviewOnly -and $extraTexts.Count -gt 0)
 }
 
 Write-Host ''
-Sync-SteamCmdRegion -ConfigVdfPath $steamCmdConfigPath -BackupDir (Join-Path $repositoryRoot '.cache') -Apply
+Sync-SteamCmdRegion -ConfigVdfPath $steamCmdConfigPath -BackupDir (Join-Path $repositoryRoot '.cache') -OverrideCellId $resolvedSteamCellId -SkipRegionSync:$SkipRegionSync -Apply
 Write-Host ''
 if ($Yes)
 {

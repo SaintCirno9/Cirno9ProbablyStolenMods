@@ -12,19 +12,23 @@ In the base game, neither the Vending Machine nor the Vending Fountain has a mod
 [/list]
 
 [h3]Options[/h3]
-Fine-tune balance anytime under [b]Options -> Mod Config -> Module Effects[/b]:
+Fine-tune balance and compatibility anytime under [b]Options -> Mod Config[/b]:
 [list]
 [*][b]Quality Effect (%)[/b] (default: 10%, range: 0-100%): Scales how much Quality converts into extra sale price markup for both machines. Set to 0 to keep only the base +10% bonus.
 [*][b]Performance Effect (%)[/b] (default: 100%, range: 0-300%): Scales Performance's effect on vending attractiveness and nightly water sale rounds. Set to 0 to disable it.
 [*][b]Guaranteed Sale Step (Over 100)[/b] (default: 50, range: 0-500): Extra attractiveness needed per +1 guaranteed sale above 100 effective attractiveness. Set to 0 to keep the vanilla cap of 3.
+[*][b]Enable 20-Level Capacity Expansion (up to 14×16)[/b] (default: On): Turn off to let vanilla or another vending capacity mod handle shelf size while keeping module bays and window position memory.
 [/list]
 
 [h3]Compatibility & Notes[/h3]
 [list]
+[*][b]Mod-Friendly Design[/b]: Compatible with multi-machine and restock mods such as [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3836658488]More Vending Machines[/url]. Window position memory hooks window centering instead of blocking store clicks, nightly sales only swap the attractiveness lookup, core tooltips append cleanly without overwriting, and the 20-level capacity expansion can be toggled off anytime in Mod Config.
 [*][b]Existing-Save Friendly[/b]: Appends the module bay at the end of the panel list so existing slot indices stay intact; machines in existing saves migrate and recalculate automatically on load.
 [*][b]Before Disabling[/b]: Remove any modules from the added module bays—and move Vending Machine stock placed outside the vanilla 8×12 grid—before disabling or uninstalling this mod so nothing is lost.
 [*][b]Zero Sensitive Capabilities[/b]: Declares empty Capabilities (no external reflection).
 [/list]
+
+[b]Source Code[/b]: [url=https://github.com/SaintCirno9/Cirno9ProbablyStolenMods]GitHub (MIT License)[/url]
 
 [hr][/hr]
 [h3]My other mods[/h3]

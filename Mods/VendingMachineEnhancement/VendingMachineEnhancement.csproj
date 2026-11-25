@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>VendingMachineEnhancement</AssemblyName>
     <RootNamespace>VendingMachineEnhancement</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.AudioModule" HintPath="$(GameManagedDir)UnityEngine.AudioModule.dll" Private="false" />

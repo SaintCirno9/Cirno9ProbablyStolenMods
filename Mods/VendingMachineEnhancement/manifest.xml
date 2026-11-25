@@ -3,7 +3,7 @@
   <ID>cirno9.vending_machine_enhancement</ID>
   <Name>自动售货机增强 / Vending Machine Enhancement</Name>
   <Author>SaintCirno9</Author>
-  <ModVersion>1.0.0</ModVersion>
+  <ModVersion>1.0.1</ModVersion>
   <Description>为自动售货机与自动售水机（饮水机）提供完整的改装模组支持（效率降低耗电、性能提升售货吸引力或额外售水轮次、质量提高售价加成，支持向核心使用模组仓扩展工具包）；将自动售货机容量升级上限翻倍至 20 次并横向扩展至 14×16；同时修复两台设备窗口位置无法记忆的问题。
 
 Adds full module bay support to both the Vending Machine and Vending Fountain (Efficiency reduces power usage, Performance boosts attractiveness or extra nightly sale rounds, Quality increases sale price bonus; supports using Module Bay Expansion Kits on each core); doubles Vending Machine capacity upgrades to 20 with horizontal expansion up to 14×16; and fixes window position persistence for both machines.</Description>

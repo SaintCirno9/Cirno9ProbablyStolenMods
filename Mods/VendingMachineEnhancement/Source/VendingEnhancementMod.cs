@@ -8,6 +8,7 @@ public sealed class VendingEnhancementMod : IMod
 {
     internal const string ModId = "cirno9.vending_machine_enhancement";
     private const string EffectSection = "模组效果 / Module Effects";
+    private const string CapacitySection = "容量扩建 / Capacity Expansion";
     private const int DefaultQualityCoefficient = 10;
     private const int DefaultPerformanceCoefficient = 100;
     private const int DefaultGuaranteedStep = 50;
@@ -15,10 +16,12 @@ public sealed class VendingEnhancementMod : IMod
     private static ConfigEntry<int> s_qualityCoefficient;
     private static ConfigEntry<int> s_performanceCoefficient;
     private static ConfigEntry<int> s_guaranteedStep;
+    private static ConfigEntry<bool> s_enableCapacityExpansion;
 
     internal static int QualityCoefficient => s_qualityCoefficient?.Value ?? DefaultQualityCoefficient;
     internal static int PerformanceCoefficient => s_performanceCoefficient?.Value ?? DefaultPerformanceCoefficient;
     internal static int GuaranteedStep => s_guaranteedStep?.Value ?? DefaultGuaranteedStep;
+    internal static bool EnableCapacityExpansion => s_enableCapacityExpansion?.Value ?? true;
 
     internal static ModLog Log { get; private set; }
 
@@ -39,6 +42,9 @@ public sealed class VendingEnhancementMod : IMod
         s_guaranteedStep ??= config.Define("guaranteed_attractiveness_step", DefaultGuaranteedStep, EffectSection,
             () => ModHelper.GetLocalized(ModId, "config_guaranteed_step"), min: 0, max: 500,
             tooltip: () => ModHelper.GetLocalized(ModId, "config_guaranteed_step_help", DefaultGuaranteedStep));
+        s_enableCapacityExpansion ??= config.Define("enable_capacity_expansion", true, CapacitySection,
+            () => ModHelper.GetLocalized(ModId, "config_enable_capacity_expansion"),
+            tooltip: () => ModHelper.GetLocalized(ModId, "config_enable_capacity_expansion_help"));
     }
 
     public void OnEnable()

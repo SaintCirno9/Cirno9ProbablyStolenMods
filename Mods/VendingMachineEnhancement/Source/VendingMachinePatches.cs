@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine;
 
@@ -30,6 +32,16 @@ internal static class VendingMachineCreatePatch
             if (!VendingEnhancementMod.Active)
             {
                 prevOnLoaded?.Invoke(gameItem);
+                return;
+            }
+            if (!VendingEnhancementMod.EnableCapacityExpansion)
+            {
+                prevOnLoaded?.Invoke(gameItem);
+                VendingEnhancementCore.EnsureMachineTags(gameItem);
+                MachineHelper.LoadUpgrade(gameItem);
+                gameItem.contentWindow?.Validate();
+                gameItem.Validate();
+                VendingEnhancementCore.RecomputeModulesAndPower(gameItem, recomputeTempStats: true);
                 return;
             }
             VendingEnhancementCore.EnsureMachineTags(gameItem);
@@ -236,7 +248,7 @@ internal static class ModuleBayExpansionKitPatch
 }
 
 /// <summary>
-/// 提高售货机容量升级可判定上限至 20 次（VENDING_CAPACITY = 22）。
+/// 提高售货机容量升级可判定上限至 20 次（VENDING_CAPACITY = 22）；关闭容量扩建开关时让位给原版或其他模组。
 /// </summary>
 [HarmonyPatch(typeof(VendingMachineHelper), nameof(VendingMachineHelper.CanUpgradedCapacity))]
 internal static class VendingCanUpgradeCapacityPatch
@@ -244,7 +256,7 @@ internal static class VendingCanUpgradeCapacityPatch
     [HarmonyPrefix]
     public static bool Prefix(GameItem vendingMachine, ref bool __result)
     {
-        if (!VendingEnhancementMod.Active)
+        if (!VendingEnhancementMod.Active || !VendingEnhancementMod.EnableCapacityExpansion)
         {
             return true;
         }
@@ -255,7 +267,7 @@ internal static class VendingCanUpgradeCapacityPatch
 }
 
 /// <summary>
-/// 放宽售货机已升级次数的统计上限至 20 次。
+/// 放宽售货机已升级次数的统计上限至 20 次；关闭容量扩建开关时让位给原版或其他模组。
 /// </summary>
 [HarmonyPatch(typeof(VendingMachineHelper), nameof(VendingMachineHelper.GetCapacityUpgradeCount))]
 internal static class VendingGetCapacityUpgradeCountPatch
@@ -263,7 +275,7 @@ internal static class VendingGetCapacityUpgradeCountPatch
     [HarmonyPrefix]
     public static bool Prefix(GameItem vendingMachine, ref int __result)
     {
-        if (!VendingEnhancementMod.Active)
+        if (!VendingEnhancementMod.Active || !VendingEnhancementMod.EnableCapacityExpansion)
         {
             return true;
         }
@@ -273,7 +285,7 @@ internal static class VendingGetCapacityUpgradeCountPatch
 }
 
 /// <summary>
-/// 接管售货机容量升级：第 1~10 次保持 8×2..8×12，第 11~20 次交替横向扩宽并扩高至 14×16。
+/// 接管售货机容量升级：第 1~10 次保持 8×2..8×12，第 11~20 次交替横向扩宽并扩高至 14×16；关闭开关时让位给原版或其他模组。
 /// </summary>
 [HarmonyPatch(typeof(VendingMachineHelper), nameof(VendingMachineHelper.UpgradeCapacity))]
 internal static class VendingUpgradeCapacityPatch
@@ -281,7 +293,7 @@ internal static class VendingUpgradeCapacityPatch
     [HarmonyPrefix]
     public static bool Prefix(GameItem core, GameItem item)
     {
-        if (!VendingEnhancementMod.Active)
+        if (!VendingEnhancementMod.Active || !VendingEnhancementMod.EnableCapacityExpansion)
         {
             return true;
         }
@@ -373,62 +385,49 @@ internal static class VendingGuaranteedSaleCountPatch
 }
 
 /// <summary>
-/// 售货机夜间售卖判定时使用经性能模组加成后的有效吸引力。
+/// 售货机夜间售卖判定时仅替换吸引力读取为经性能模组加成后的有效吸引力，不短路其他模组的 Prefix/Postfix。
 /// </summary>
 [HarmonyPatch(typeof(VendingMachineHelper), nameof(VendingMachineHelper.CheckSoldItem))]
 internal static class VendingCheckSoldItemPatch
 {
-    [HarmonyPrefix]
-    public static bool Prefix(GameItem vendingMachine, List<GameItem> eligibleItems, ref List<GameItem> __result)
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        if (!VendingEnhancementMod.Active)
+        MethodInfo getTagReadonly = AccessTools.Method(typeof(GameItem), nameof(GameItem.GetTagReadonly), new[] { typeof(string) });
+        MethodInfo getInt = AccessTools.Method(typeof(TagState), nameof(TagState.GetInt), Type.EmptyTypes);
+        MethodInfo getEffective = AccessTools.Method(typeof(VendingEnhancementCore), nameof(VendingEnhancementCore.GetAttractivenessForSale), new[] { typeof(GameItem) });
+
+        List<CodeInstruction> codes = instructions.ToList();
+        if (getTagReadonly == null || getInt == null || getEffective == null)
         {
-            return true;
+            VendingEnhancementMod.Log?.Warning("CheckSoldItem Transpiler 未能解析目标方法，已回退为原版吸引力读取。");
+            return codes;
         }
 
-        int effectiveAttractiveness = VendingEnhancementCore.GetEffectiveVendingAttractiveness(vendingMachine);
-        List<GameItem> soldItems = new List<GameItem>();
-        Dictionary<GameItem, int> prices = new Dictionary<GameItem, int>();
-
-        foreach (GameItem eligibleItem in eligibleItems)
+        int replaced = 0;
+        for (int i = 0; i + 2 < codes.Count; i++)
         {
-            int vendingPrice = VendingMachineHelper.GetVendingPrice(eligibleItem);
-            prices[eligibleItem] = vendingPrice;
-            if (UnityEngine.Random.value * 100f < VendingMachineHelper.GetSaleChance(effectiveAttractiveness, eligibleItem, vendingPrice))
+            if (codes[i].opcode == OpCodes.Ldstr
+                && codes[i].operand is string tagName
+                && string.Equals(tagName, VendingMachineHelper.VENDING_ATTRACTIVENESS, StringComparison.Ordinal)
+                && codes[i + 1].Calls(getTagReadonly)
+                && codes[i + 2].Calls(getInt))
             {
-                soldItems.Add(eligibleItem);
+                CodeInstruction callEffective = new CodeInstruction(OpCodes.Call, getEffective);
+                callEffective.MoveLabelsFrom(codes[i]);
+                callEffective.MoveBlocksFrom(codes[i]);
+                codes[i] = callEffective;
+                codes.RemoveRange(i + 1, 2);
+                replaced++;
+                break;
             }
         }
 
-        int guaranteedSaleCount = VendingMachineHelper.GetGuaranteedSaleCount(effectiveAttractiveness);
-        if (soldItems.Count < guaranteedSaleCount)
+        if (replaced == 0)
         {
-            foreach (GameItem item in eligibleItems
-                .Where((GameItem item) => !soldItems.Contains(item)
-                    && !item.IsGameItemType("LUXURY_ITEM")
-                    && prices[item] <= VendingMachineHelper.GUARANTEED_SALE_MAX_VALUE)
-                .OrderByDescending(IsVendingConsumable)
-                .ToList())
-            {
-                if (soldItems.Count >= guaranteedSaleCount)
-                {
-                    break;
-                }
-                soldItems.Add(item);
-            }
+            VendingEnhancementMod.Log?.Warning("CheckSoldItem Transpiler 未匹配到 VENDING_ATTRACTIVENESS 读取序列，已回退为原版逻辑。");
         }
-
-        __result = soldItems;
-        return false;
-    }
-
-    private static bool IsVendingConsumable(GameItem item)
-    {
-        return item.IsGameItemType("FOOD")
-            || item.IsGameItemType("WATER_RATION")
-            || item.IsGameItemType("BREVAGE")
-            || item.IsGameItemType("PROCESSED_FOOD")
-            || item.IsGameItemType("TREAT");
+        return codes;
     }
 }
 
@@ -574,34 +573,45 @@ internal static class VendingBonusFeaturePatch
 }
 
 /// <summary>
-/// 更新自动售货机核心悬停提示：展示 20 级容量与网格尺寸、模组仓扩展进度及三维加成状态。
+/// 更新自动售货机核心悬停提示：通过 Prefix 刷新模组耗电、Postfix 追加模组与扩建信息，不覆盖原版与其他模组的提示内容。
 /// </summary>
 [HarmonyPatch(typeof(VendingMachineHelper), nameof(VendingMachineHelper.CreateTooltip))]
 internal static class VendingCoreTooltipPatch
 {
     [HarmonyPrefix]
-    public static bool Prefix(RichTextBuilder builder, GameItem item)
+    public static void Prefix(GameItem item)
     {
-        if (!VendingEnhancementMod.Active)
+        if (!VendingEnhancementMod.Active
+            || item == null
+            || !item.identifier.Equals(VendingEnhancementCore.VendingMachineCoreId, StringComparison.Ordinal))
         {
-            return true;
+            return;
         }
-        if (item == null || !item.identifier.Equals(VendingEnhancementCore.VendingMachineCoreId, StringComparison.Ordinal))
+
+        GameItem parentItem = GeneralHelper.GetParentItem(item);
+        if (parentItem != null)
         {
-            return true;
+            VendingEnhancementCore.EnsureMachineTags(parentItem);
+            VendingEnhancementCore.RecomputeModulesAndPower(parentItem, recomputeTempStats: false);
+        }
+    }
+
+    [HarmonyPostfix]
+    public static void Postfix(RichTextBuilder builder, GameItem item)
+    {
+        if (!VendingEnhancementMod.Active
+            || builder == null
+            || item == null
+            || !item.identifier.Equals(VendingEnhancementCore.VendingMachineCoreId, StringComparison.Ordinal))
+        {
+            return;
         }
 
         GameItem parentItem = GeneralHelper.GetParentItem(item);
         if (parentItem == null)
         {
-            return false;
+            return;
         }
-
-        VendingEnhancementCore.RecomputeModulesAndPower(parentItem, recomputeTempStats: false);
-
-        builder.AddLine(LocHelper.GetLocalizedMechanic("mech_vending_tooltip_markup"), ignoreEmpty: true, RenderHandler.ColorPalette.LightTurquoise);
-        builder.AddLine(LocHelper.GetLocalizedMechanic("mech_vending_tooltip_popular"), ignoreEmpty: true, RenderHandler.ColorPalette.LightTurquoise);
-        builder.AddLine(LocHelper.GetLocalizedMechanic("mech_vending_tooltip_attractiveness", parentItem.GetTagReadonly(VendingMachineHelper.VENDING_ATTRACTIVENESS).GetInt()), ignoreEmpty: true, RenderHandler.ColorPalette.LightTurquoise);
 
         int perfBonus = VendingEnhancementCore.GetEffectivePerformanceBonus(parentItem);
         if (perfBonus != 0)
@@ -621,56 +631,67 @@ internal static class VendingCoreTooltipPatch
             builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_price_bonus", priceBonus), ignoreEmpty: true, color);
         }
 
-        string ingotName = LocHelper.GetLocalizedItem("item_metal_ingot_name");
-        int capUpgrades = VendingEnhancementCore.GetCapacityUpgradeCount(parentItem);
-        int curCap = parentItem.GetTagReadonly(VendingMachineHelper.VENDING_CAPACITY).GetInt();
-        (int width, int height) = VendingEnhancementCore.GetVendingGridSize(curCap);
-        string storageLine = LocHelper.GetLocalizedMechanic("mech_fridge_tooltip_upgrade_storage", ingotName, capUpgrades, VendingEnhancementCore.MaxCapacityUpgrades);
+        if (VendingEnhancementMod.EnableCapacityExpansion)
+        {
+            int capUpgrades = VendingEnhancementCore.GetCapacityUpgradeCount(parentItem);
+            int curCap = parentItem.GetTagReadonly(VendingMachineHelper.VENDING_CAPACITY).GetInt();
+            (int width, int height) = VendingEnhancementCore.GetVendingGridSize(curCap);
+            builder.AddLine(ModHelper.GetLocalized(
+                VendingEnhancementMod.ModId,
+                "tooltip_expanded_capacity",
+                capUpgrades,
+                VendingEnhancementCore.MaxCapacityUpgrades,
+                width,
+                height), ignoreEmpty: true, RenderHandler.ColorPalette.LightCyan);
+        }
 
-        VendingEnhancementCore.EnsureMachineTags(parentItem);
         string kitName = LocHelper.GetLocalizedItem("item_module_bay_expansion_kit_name");
         int bayStage = parentItem.GetTagReadonly(MachineHelper.MODULE_UPGRADE_STAGE_INT).GetInt();
-
-        VendingMachineHelper.AddUpgradeHeader(builder);
-        builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_storage_with_size", storageLine, width, height), ignoreEmpty: true, RenderHandler.ColorPalette.LightCyan);
-        VendingMachineHelper.AddAttractivenessUpgradeLine(builder, parentItem);
         builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_module_bay_upgrade", kitName, bayStage, VendingEnhancementCore.MaxModuleBayUpgrades), ignoreEmpty: true, RenderHandler.ColorPalette.LightCyan);
-        builder.AddLine(LocHelper.GetLocalizedMechanicOrDefault("mech_vending_tooltip_upgrade_power", "Each {0} upgrade raises the nightly energy use by {1}.", ingotName, 1), ignoreEmpty: true, RenderHandler.ColorPalette.LightCyan);
-
         builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_module_guide_vending"), ignoreEmpty: true, RenderHandler.ColorPalette.LightGray);
-        MachineryHelper.CreateMachineryTooltip(builder, parentItem);
-        return false;
     }
 }
 
 /// <summary>
-/// 更新自动售水机核心悬停提示：展示售水轮次、质量售价加成及模组仓扩展进度。
+/// 更新自动售水机核心悬停提示：通过 Prefix 刷新模组耗电、Postfix 追加售水轮次、售价加成与模组仓进度。
 /// </summary>
 [HarmonyPatch(typeof(VendingFountainHelper), nameof(VendingFountainHelper.CreateTooltip))]
 internal static class FountainCoreTooltipPatch
 {
     [HarmonyPrefix]
-    public static bool Prefix(RichTextBuilder builder, GameItem item)
+    public static void Prefix(GameItem item)
     {
-        if (!VendingEnhancementMod.Active)
+        if (!VendingEnhancementMod.Active
+            || item == null
+            || !item.identifier.Equals(VendingEnhancementCore.VendingFountainCoreId, StringComparison.Ordinal))
         {
-            return true;
+            return;
         }
-        if (item == null || !item.identifier.Equals(VendingEnhancementCore.VendingFountainCoreId, StringComparison.Ordinal))
+
+        GameItem parentItem = GeneralHelper.GetParentItem(item);
+        if (parentItem != null)
         {
-            return true;
+            VendingEnhancementCore.EnsureMachineTags(parentItem);
+            VendingEnhancementCore.RecomputeModulesAndPower(parentItem, recomputeTempStats: false);
+        }
+    }
+
+    [HarmonyPostfix]
+    public static void Postfix(RichTextBuilder builder, GameItem item)
+    {
+        if (!VendingEnhancementMod.Active
+            || builder == null
+            || item == null
+            || !item.identifier.Equals(VendingEnhancementCore.VendingFountainCoreId, StringComparison.Ordinal))
+        {
+            return;
         }
 
         GameItem parentItem = GeneralHelper.GetParentItem(item);
         if (parentItem == null)
         {
-            return false;
+            return;
         }
-
-        VendingEnhancementCore.RecomputeModulesAndPower(parentItem, recomputeTempStats: false);
-
-        builder.AddLine(LocHelper.GetLocalizedMechanic("mech_vending_tooltip_markup"), ignoreEmpty: true, RenderHandler.ColorPalette.LightTurquoise);
-        builder.AddLine(LocHelper.GetLocalizedMechanic("mech_vending_tooltip_attractiveness", parentItem.GetTagReadonly(VendingMachineHelper.VENDING_ATTRACTIVENESS).GetInt()), ignoreEmpty: true, RenderHandler.ColorPalette.LightTurquoise);
 
         int perfBonus = VendingEnhancementCore.GetEffectivePerformanceBonus(parentItem);
         if (perfBonus != 0)
@@ -688,53 +709,26 @@ internal static class FountainCoreTooltipPatch
             builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_price_bonus", priceBonus), ignoreEmpty: true, color);
         }
 
-        VendingEnhancementCore.EnsureMachineTags(parentItem);
         string kitName = LocHelper.GetLocalizedItem("item_module_bay_expansion_kit_name");
         int bayStage = parentItem.GetTagReadonly(MachineHelper.MODULE_UPGRADE_STAGE_INT).GetInt();
-
-        VendingMachineHelper.AddUpgradeHeader(builder);
-        VendingMachineHelper.AddAttractivenessUpgradeLine(builder, parentItem);
         builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_module_bay_upgrade", kitName, bayStage, VendingEnhancementCore.MaxModuleBayUpgrades), ignoreEmpty: true, RenderHandler.ColorPalette.LightCyan);
-        builder.AddLine(LocHelper.GetLocalizedMechanicOrDefault("mech_fountain_tooltip_upgrade_power", "Every {1} {0} upgrades raise the nightly energy use by {2}.", LocHelper.GetLocalizedItem("item_common_electronic_name"), 2, 1), ignoreEmpty: true, RenderHandler.ColorPalette.LightCyan);
-
         builder.AddLine(ModHelper.GetLocalized(VendingEnhancementMod.ModId, "tooltip_module_guide_fountain"), ignoreEmpty: true, RenderHandler.ColorPalette.LightGray);
-        MachineryHelper.CreateMachineryTooltip(builder, parentItem);
-        return false;
     }
 }
 
 /// <summary>
-/// 修复商店中点击自动售货机每次强制居中的问题，恢复并记住玩家拖动后的窗口位置。
+/// 在窗口居中后恢复售货机/售水机已保存的位置，不拦截 StoreVendingMachine.OnClick，兼容任意多机或点击交互模组。
 /// </summary>
-[HarmonyPatch(typeof(StoreVendingMachine), nameof(StoreVendingMachine.OnClick))]
-internal static class StoreVendingMachineOnClickPatch
+[HarmonyPatch(typeof(PixelWindow), nameof(PixelWindow.Center))]
+internal static class PixelWindowCenterPatch
 {
-    [HarmonyPrefix]
-    public static bool Prefix()
+    [HarmonyPostfix]
+    public static void Postfix(PixelWindow __instance)
     {
         if (!VendingEnhancementMod.Active)
         {
-            return true;
+            return;
         }
-        VendingEnhancementCore.ToggleOrOpenVendingWindow(EmporiumEntry.Instance?.vendingMachineElement?.childItem);
-        return false;
-    }
-}
-
-/// <summary>
-/// 修复商店中点击自动售水机每次强制居中的问题，恢复并记住玩家拖动后的窗口位置。
-/// </summary>
-[HarmonyPatch(typeof(StoreVendingFountain), nameof(StoreVendingFountain.OnClick))]
-internal static class StoreVendingFountainOnClickPatch
-{
-    [HarmonyPrefix]
-    public static bool Prefix()
-    {
-        if (!VendingEnhancementMod.Active)
-        {
-            return true;
-        }
-        VendingEnhancementCore.ToggleOrOpenVendingWindow(EmporiumEntry.Instance?.vendingFountainElement?.childItem);
-        return false;
+        VendingEnhancementCore.RestoreVendingWindowPositionIfSaved(__instance);
     }
 }

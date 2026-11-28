@@ -297,6 +297,36 @@ internal static class BoardData
             }
         }
         AddHenchmanMarkers(entry, sources, exact);
+        AddExtraPerkMarkers(entry, sources, manager, exact);
+    }
+
+    // 其他模组（如深空环站：深空往事）为避免污染存档，会在 ReputationElement.Init 后直接追加标准 PerkElement 而不写入 StoreReputation.perks。
+    private static void AddExtraPerkMarkers(BoardEntry entry, Dictionary<StoreReputationPerk, PerkElement> sources, ReputationUIManager manager, double exact)
+    {
+        foreach (var pair in sources)
+        {
+            StoreReputationPerk perk = pair.Key;
+            PerkElement source = pair.Value;
+            if (source == null || !source.gameObject.activeSelf
+                || source.name.StartsWith(HenchmanStarPrefix, StringComparison.Ordinal)
+                || entry.Markers.Any(marker => ReferenceEquals(marker.Perk, perk)
+                    || (!string.IsNullOrEmpty(perk.perkId) && marker.Perk?.perkId == perk.perkId)))
+            {
+                continue;
+            }
+            Sprite sprite = source.image != null && source.image.sprite != null
+                ? source.image.sprite
+                : NativeSprite(manager, perk.perkThreshold);
+            bool active = Reached(perk, exact) && (perk.isAlwaysActive || perk.isUnlocked);
+            entry.Markers.Add(new BoardMarker
+            {
+                Perk = perk,
+                Source = source.gameObject,
+                Threshold = perk.perkThreshold,
+                Sprite = sprite,
+                State = active ? MarkerState.Active : MarkerState.Inactive
+            });
+        }
     }
 
     private static bool Reached(StoreReputationPerk perk, double exact)

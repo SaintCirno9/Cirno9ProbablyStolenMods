@@ -89,7 +89,9 @@ internal sealed class BoardMarkerGroup
             thresholdText.text = marker.Threshold.ToString("+0;-0;0");
             TextMeshProUGUI nameText = Ui.Text(item.rectTransform, "Name", style, fontSize, textLeft + 54f, 0f, itemWidth - textLeft - 58f, rowHeight,
                 TextAlignmentOptions.MidlineLeft, BoardStyle.Ink);
-            nameText.text = marker.Perk?.GetLocalizedPerkName() ?? fallbackName;
+            nameText.text = marker.Perk != null && !string.IsNullOrEmpty(marker.Perk.perkId)
+                ? marker.Perk.GetLocalizedPerkName()
+                : fallbackName;
             items[i] = (icon, hover, badge, thumb, thresholdText, nameText);
         }
     }

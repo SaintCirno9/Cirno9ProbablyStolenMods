@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>ReputationInterfaceRemake</AssemblyName>
     <RootNamespace>ReputationInterfaceRemake</RootNamespace>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UI" HintPath="$(GameManagedDir)UnityEngine.UI.dll" Private="false" />

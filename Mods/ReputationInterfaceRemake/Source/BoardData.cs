@@ -222,7 +222,13 @@ internal static class BoardData
         {
             double exact = entry.Rep.GetReputationExact();
             entry.Value = (float)exact;
-            entry.Status = StoreReputation.GetReputationStatus(entry.Rep.GetReputation());
+            // 不在 PlayerStore 中的独立声望行（如垃圾场拓展）可能在 Init 后改写状态称号，优先保留控件文本。
+            string elementStatus = !inPlayerStore && element != null && element.reputationStatus != null
+                ? element.reputationStatus.text
+                : null;
+            entry.Status = !string.IsNullOrEmpty(elementStatus)
+                ? elementStatus
+                : StoreReputation.GetReputationStatus(entry.Rep.GetReputation());
             entry.Number = exact.ToString("+0.00;-0.00;0.00");
             AddPerkMarkers(entry, manager, exact, inPlayerStore);
         }

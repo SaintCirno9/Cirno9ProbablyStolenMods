@@ -473,7 +473,8 @@ internal sealed class MarkerHover : MonoBehaviour, IPointerEnterHandler, IPointe
         bool handled = false;
         foreach (MonoBehaviour behaviour in source.GetComponents<MonoBehaviour>())
         {
-            if (behaviour == null)
+            // 与 Unity EventSystem 一致：跳过被其他模组禁用的组件（如禁用原版 PerkElement 后改挂自定义悬停处理器）。
+            if (behaviour == null || !behaviour.enabled)
             {
                 continue;
             }

@@ -3,12 +3,12 @@
   <ID>cirno9.reputation_interface_remake</ID>
   <Name>势力声望面板重制 / Reputation Interface Remake</Name>
   <Author>SaintCirno9</Author>
-  <ModVersion>1.0.5</ModVersion>
-  <Description>用横向行式界面替代原版势力档案：每个势力一行，-200 到 200 横条上标注全部特性图标，势力多时可滚动。已测试兼容势力声望扩展（新生同盟、扩展特性图标与名称）、酿酒拓展与香烟拓展（外环区）、深空诊所2077（医疗声望）、災變日 Disaster Day（灯塔独占声望面板与特性点亮状态）、上层区 Upper Levels：可能是DLC（脱离其横向滚动裁切视口以完整展示并屏蔽底层原版界面）；其他模组以标准方式新增的势力会自动显示。可在游戏“选项”中切回原版界面，或开启调试选项预览未解锁或未触发的势力声望条。
+  <ModVersion>1.0.6</ModVersion>
+  <Description>用横向行式界面替代原版势力档案：每个势力一行，-200 到 200 横条上标注全部特性图标，势力多时可滚动。已测试兼容势力声望扩展（新生同盟、扩展特性图标与名称）、酿酒拓展与香烟拓展（外环区）、深空诊所2077（医疗声望）、災變日 Disaster Day（灯塔独占声望面板与特性点亮状态）、上层区 Upper Levels：可能是DLC（脱离其横向滚动裁切视口以完整展示并屏蔽底层原版界面）、垃圾场拓展（拾荒客声望行、自定义称号与特性悬停详情）；其他模组以标准方式新增的势力会自动显示。可在游戏“选项”中切回原版界面，或开启调试选项预览未解锁或未触发的势力声望条。
 
 支持「声望拓展：帮派与投资」的额外奖励和人物页。点击带角标的奖励可切换开关，点击其他奖励可固定详情。统一排列顶部的势力、人物与势力档案按钮，避免按钮重叠。
 
-Replaces the faction reputation screen with a row layout: one row per faction, every perk icon placed on a -200 to 200 bar, and scrolling when there are many factions. Tested with Faction Reputation Expansion (Newborn Alliance, extended perk icons and names), Brewing Expansion and Tobacco Expansion (Outer Ring), Deep Space Clinic 2077 (medical reputation), Disaster Day (exclusive Lighthouse reputation panel and perk active states), and Upper Levels (escapes its clipped horizontal scroll viewport to display in full and hide the vanilla layer); factions other mods add the standard way show up automatically. The game's Options menu lets you restore the original screen or enable a debug toggle to preview locked or untriggered faction bars.
+Replaces the faction reputation screen with a row layout: one row per faction, every perk icon placed on a -200 to 200 bar, and scrolling when there are many factions. Tested with Faction Reputation Expansion (Newborn Alliance, extended perk icons and names), Brewing Expansion and Tobacco Expansion (Outer Ring), Deep Space Clinic 2077 (medical reputation), Disaster Day (exclusive Lighthouse reputation panel and perk active states), Upper Levels (escapes its clipped horizontal scroll viewport to display in full and hide the vanilla layer), and Scrapyard Expansion (Scavenger reputation row, custom standing titles, and perk hover details); factions other mods add the standard way show up automatically. The game's Options menu lets you restore the original screen or enable a debug toggle to preview locked or untriggered faction bars.
 
 Supports the extra perks and People page from Reputation Expansion: Gangs and Investments. Click a badged perk to toggle it, or click any other perk to pin its details. The toolbar keeps the Factions and People tabs separate from the Faction Journal shortcut so the buttons do not overlap.</Description>
   <GameVersions>
